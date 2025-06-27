@@ -1,0 +1,181 @@
+<div class="card" id="{{$categoryName}}" data-parent="{{$parent}}">
+    <div class="card-header card-head-inverse bg-secondary">
+        <a data-action="collapse"><h4 class="card-title text-white">Foreign - DA <span class="badge badge bg-white text-secondary badge-pill mr-2"></span></h4></a>
+        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+        <div class="heading-elements">
+            <ul class="list-inline mb-0">
+                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-content collapse" style="overflow-x: auto">
+        <div class="card-body">
+            @if(isset($voucher))
+                @foreach($voucher->categoryItems($voucher->id,$categoryID) as $item)
+                    {{--*/ $itemCount++ /*--}}
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-2">
+                            <label>Duration of Trip</label>
+                            <div class='input-group'>
+                                <input type='text' class="form-control datetime" name="date_range_{{$itemCount}}" value="{{date('m/d/Y H:i', strtotime($item->date_from)).' - '.date('m/d/Y H:i', strtotime($item->date_to))}}" required/>
+                                <div class="input-group-append">
+                            <span class="input-group-text">
+                              <span class="la la-calendar"></span>
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Personal Days</label>
+                            <input type="text" class="form-control" value="{{$item->personal_days}}" name="personal_days_{{$itemCount}}" id="personal_days_{{$itemCount}}" required>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Type of Accommodation</label>
+                            <select class="select2 form-control" name="accomodation_food_{{$itemCount}}" required>
+                                <option></option>
+                                <option {{$item->accomodation_food == 'Own Accomodation'?'selected':''}} value="Own Accomodation">Own Accomodation</option>
+                                <option {{$item->accomodation_food == 'Accomodation by Host'?'selected':''}} value="Accomodation by Host">Accomodation by Host</option>
+                                <option {{$item->accomodation_food == 'Both Accomodation & Food by Host'?'selected':''}} value="Both Accomodation & Food by Host">Both Accomodation & Food by Host</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Purpose</label>
+                            <select class="select2 form-control" name="purpose_{{$itemCount}}" required>
+                                <option {{$item->purpose == 'Meeting'?'selected':''}} value="Meeting">Meeting</option>
+                                <option {{$item->purpose == 'Training'?'selected':''}} value="Training">Training</option>
+                                <option {{$item->purpose == 'Exhibition'?'selected':''}} value="Exhibition">Exhibition</option>
+                                <option {{$item->purpose == 'Plant Visit'?'selected':''}} value="Plant Visit">Plant Visit</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Eligible period for DA</label>
+                            <input type="number" class="form-control" data-id='225' value="{{(1+intval(date_diff(date_create(explode(' ',$item->date_to)[0]),date_create(explode(' ',$item->date_from)[0]))->format('%a')))-$item->personal_days}}" name="da_eligible_period_{{$itemCount}}" id="da_eligible_period_{{$itemCount}}" readonly>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Visa Required</label>
+                            <select class="select2 form-control" name="visa_required_{{$itemCount}}" required>
+                                <option {{$item->visa_required == '0'?'selected':''}} value="0">No</option>
+                                <option {{$item->visa_required == '1'?'selected':''}} value="1">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Airport - Hotel Transfer</label>
+                            <select class="select2 form-control" name="airport_transport_{{$itemCount}}" required>
+                                <option {{$item->airport_transaport == '0'?'selected':''}} value="0">No</option>
+                                <option {{$item->airport_transaport == '0'?'selected':''}} value="1">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2 mb-2">
+                            <label>Amount (USD)</label>
+                            <input type="text" class="form-control" value="{{$item->forex_amount}}" name="amount_{{$itemCount}}" id="amount_{{$itemCount}}" readonly>
+                        </div>
+                        <div class="form-group col-md-2 mb-2" hidden>
+                            <label>Category</label>
+                            <input type="text" class="form-control" value="{{$categoryID}}" name="category_{{$itemCount}}" id="category_{{$itemCount}}" readonly>
+                        </div>
+                        <div class="form-group col-md-2" style="margin-top: 2.0rem">
+                            <a class="btn btn-danger btn-sm white" id="removeCategoryItem"><i class="la la-trash-o"></i></a>
+                        </div>
+                    </div>
+                @endforeach
+                {{--*/ View::share('itemCount', $itemCount) /*--}}
+            @else
+                <div class="form-row">
+                    <div class="form-group col-md-4 mb-2">
+                        <label>Approximate Duration</label>
+                        <div class='input-group'>
+                            <input type='text' class="form-control datetime" name="date_range_{{$itemCount}}" required/>
+                            <div class="input-group-append">
+                            <span class="input-group-text">
+                              <span class="la la-calendar"></span>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Country</label>
+                        <select class="select2 form-control country countryList" name="country_{{$itemCount}}" id="personal_days_{{$itemCount}}" required>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="United States of America">United States of America</option>
+                            <option value="Canada">Canada</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="Dubai">Dubai</option>
+                            <option value="France">France</option>
+                            <option value="Saudi Arabia">Saudi Arabia</option>
+                            <option value="Turkey">Turkey</option>
+                            <option value="China">China</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-control otherCountry" name="country_{{$itemCount}}" disabled hidden required>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>City</label>
+                        <input type="text" class="form-control" name="city_{{$itemCount}}" id="personal_days_{{$itemCount}}" required>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Personal Days</label>
+                        <input type="text" class="form-control" value="0" name="personal_days_{{$itemCount}}" id="personal_days_{{$itemCount}}" required>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Type of Accommodation</label>
+                        <select class="select2 form-control" name="accomodation_food_{{$itemCount}}" required>
+                            <option></option>
+                            <option value="Own Accomodation">Own Accomodation</option>
+                            <option value="Accomodation by Host">Accomodation by Host</option>
+                            <option value="Both Accomodation & Food by Host">Both Accomodation & Food by Host</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Purpose</label>
+                        <select class="select2 form-control" name="purpose_{{$itemCount}}" required>
+                            <option value="Meeting">Meeting</option>
+                            <option value="Training">Training</option>
+                            <option value="Exhibition">Exhibition</option>
+                            <option value="Plant Visit">Plant Visit</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Eligible period for DA</label>
+                        <input type="number" class="form-control" data-id='225' name="da_eligible_period_{{$itemCount}}" id="da_eligible_period_{{$itemCount}}" readonly>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Visa Required</label>
+                        <select class="select2 form-control" name="visa_required_{{$itemCount}}" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Airport - Hotel Transfer</label>
+                        <select class="select2 form-control" name="airport_transport_{{$itemCount}}" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Currency</label>
+                        <select class="select2 form-control" name="currency_{{$itemCount}}" required>
+                            <option value="USD">USD</option>
+                            <option value="PKR">PKR</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label>Advance Amount (USD)</label>
+                        <input type="text" class="form-control" value="0" name="amount_{{$itemCount}}" id="amount_{{$itemCount}}" readonly>
+                    </div>
+                    <div class="form-group col-md-2 mb-2" hidden>
+                        <label>Category</label>
+                        <input type="text" class="form-control" value="{{$categoryID}}" name="category_{{$itemCount}}" id="category_{{$itemCount}}" readonly>
+                    </div>
+                    <div class="form-group col-md-2" style="margin-top: 2.0rem">
+                        <a class="btn btn-danger btn-sm white" id="removeCategoryItem"><i class="la la-trash-o"></i></a>
+                    </div>
+                </div>
+            @endif
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-info btn-sm white" id="addVoucherItem" data-category="{{$categoryName}}" data-category-id="{{$categoryID}}"><i class="la la-plus-circle"></i></a>
+        </div>
+    </div>
+</div>

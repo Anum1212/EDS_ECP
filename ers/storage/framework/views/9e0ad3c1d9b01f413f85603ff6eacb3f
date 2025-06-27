@@ -1,0 +1,80 @@
+
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <div class="content-body">
+        <section class="flexbox-container">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="col-md-4 col-10 box-shadow-2 p-0">
+                    <?php if(count($errors) > 0): ?>
+                        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Oh !</strong> Please fix the following issues to continue
+                            <ul class="error">
+                                <?php foreach($errors->all() as $error): ?>
+                                    <li style="list-style: circle"><?php echo e($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Session::has("error")): ?>
+                        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Oh !</strong> <?php echo e(Session::get("error")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Session::has("success")): ?>
+                        <div class="alert bg-success alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-up"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Yeah !</strong> <?php echo e(Session::get("success")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <div class="card border-grey border-lighten-3 m-0">
+                        <div class="card-header border-0">
+                            <div class="card-title text-center">
+                                <div class="p-1">
+                                    <img src="<?php echo e(asset('assets/img/logo-packages.png')); ?>" alt="branding logo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2">
+                                <span>Reset Password</span>
+                            </p>
+                            <div class="card-body pt-0">
+                                <form class="form-horizontal" action="<?php echo e(URL::to('reset/password'.'/'.$token)); ?>" method="post">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <fieldset class="form-group floating-label-form-group">
+                                        <label for="user-name">New Password</label>
+                                        <input type="password" class="form-control" id="new_password" name="new_password" value="<?php echo e(Input::old('new_password')); ?>" placeholder="New Password">
+                                    </fieldset>
+                                    <fieldset class="form-group floating-label-form-group">
+                                        <label for="user-name">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" value="<?php echo e(Input::old('new_password_confirmation')); ?>" placeholder="Confirm New Password">
+                                    </fieldset>
+                                    <p class="danger text-center">Your password must be more than <strong>8 characters long</strong>, should contain at-least <strong>1 Uppercase</strong>, <strong>1 Lowercase</strong>, <strong>1 Numeric</strong> and <strong>1 special character</strong>.</p>
+                                    <button type="submit" class="btn btn-outline-info btn-block mt-2"><i class="ft-unlock"></i> Reset Password</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.login-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

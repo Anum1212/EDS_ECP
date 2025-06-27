@@ -1,0 +1,65 @@
+
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <div class="content-body">
+        <section id="form-control-repeater">
+            <form action="<?php echo e(URL::to('processed/vouchers')); ?>" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" id="file-repeater">Basic Information for generating <h4>All Processed Vouchers</h4></h4>
+                                <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            </div>
+                            <div class="card-content collapse show">
+                                <div class="card-body">
+                                    <div class="form row">
+                                        <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                        <div class="form-group col-md-12 mb-2">
+                                            <label>Select Status</label><br>
+                                            <label>
+                                                <input type="radio" name="filterStatus" value="Processed" checked> <small>Processed</small>
+                                                <input type="radio" name="filterStatus" value="Posted"> <small>Posted</small>
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-12 mb-2">
+                                            <label>Select Date Column</label><br>
+                                            <label>
+                                                <input type="radio" name="filterColumn" value="processed_at" checked> <small>Processed Date</small>
+                                                <input type="radio" name="filterColumn" value="created_at"> <small>Voucher Date</small>
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-12 mb-2">
+                                            <label>Select Bank</label><br>
+                                            <label>
+                                                <input type="radio" name="filterBank" value="1" checked><small>MCB</small>
+                                                <input type="radio" name="filterBank" value="2" ><small>SCB</small>
+                                                <input type="radio" name="filterBank" value="3" ><small>Emirates NBD</small>
+
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-2">
+                                            <label>From</label>
+                                            <input type="date" class="form-control" value="<?php echo e(date('Y-m-d', strtotime(date('Y-m-d').'- 1 month'))); ?>" name="from" required>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-2">
+                                            <label>To</label>
+                                            <input type="date" class="form-control" value="<?php echo e(date('Y-m-d')); ?>" name="to" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-info btn-sm" type="submit"><i class="la la-paper-plane-o"></i> Submit </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.ers-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

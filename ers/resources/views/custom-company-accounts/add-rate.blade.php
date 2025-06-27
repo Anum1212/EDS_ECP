@@ -1,0 +1,70 @@
+{{--*/ $categories = \App\Category::whereHas('company', function($query) use ($employee){$query->where('companies.id', '=', $employee->department->businessUnit->company->id);})->get(); /*--}}
+{{--*/ $grades = \App\Grade::whereHas('company', function($query) use ($employee){$query->where('companies.id', '=', $employee->department->businessUnit->company->id);})->get(); /*--}}
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="{{URL::to('rate/add')}}" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Rate Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="bu-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Rate From</label>
+                                        <input type="date" class="form-control" value="{{date('Y-m-d',strtotime(date('Y-m-d').'+ 1 day'))}}" name="rate_from" required>
+                                    </div>
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Grade</label>
+                                        <select class="select2 form-control" name="grades[]" required multiple>
+                                            <optgroup label="Individual Grades">
+                                                @foreach($grades as $grade)
+                                                    <option value="{{$grade->id}}">{{$grade->company->company_name.' / '.$grade->primary_name}}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form row" id="bu-form">
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Category</label>
+                                        <select class="select2 form-control" name="category" required>
+                                            <option value="">Select</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->category_name}}">{{$category->company->company_name.' / '.$category->category_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Currency</label>
+                                        <select class="select2 form-control" name="currency" required>
+                                            <option value="">Select</option>
+                                            <option value="PKR">PKR</option>
+                                            <option value="USD">USD</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Amount</label>
+                                        <input type="text" class="form-control" value="{{Input::old('amount')}}" name="amount" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer" id="bu-form-footer">
+                                <button class="btn btn-success btn-sm" type="submit"><i class="la la-paper-plane-o"></i> Submit </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

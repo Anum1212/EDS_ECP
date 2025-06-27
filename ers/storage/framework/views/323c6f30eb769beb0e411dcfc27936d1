@@ -1,0 +1,193 @@
+<?php /**/ $businessUnits = \App\Business_Unit::whereHas('company', function($query) use ($employee){$query->where('companies.id', '=', $employee->department->businessUnit->company->id);})->get(); /**/ ?>
+<?php /**/ $departments = \App\Department::whereHas('businessUnit.company', function($query) use ($employee){$query->where('companies.id', '=', $employee->department->businessUnit->company->id);})->get(); /**/ ?>
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="<?php echo e(URL::to('employee/update'.'/'.$employeeToUpdate->id)); ?>" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Personal Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="bu-form">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>ID</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->employee_number); ?>" name="id" required>
+                                    </div>
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->employee_name); ?>" name="name" required>
+                                    </div>
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control" value="<?php echo e($employeeToUpdate->email); ?>" name="email" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Nick Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->nick_name); ?>" name="nick_name">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Mobile</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->mobile); ?>" name="mobile" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Date of Birth</label>
+                                        <input type="date" class="form-control" value="<?php echo e($employeeToUpdate->date_of_birth); ?>" name="date_of_birth" required>
+                                    </div>
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Address</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->address); ?>" name="address">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>City</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->city); ?>" name="city">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>CNIC</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->cnic); ?>" name="cnic" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Marital Status</label>
+                                        <select class="select2 form-control marital_status" name="marital_status" required>
+                                            <option value="Single" <?php echo e($employeeToUpdate->marital_status == 'Single'?"selected":""); ?>>Single</option>
+                                            <option value="Married" <?php echo e($employeeToUpdate->marital_status == 'Married'?"selected":""); ?>>Married</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Vehicle Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="vehicleContainer">
+                                    <?php if(count($employeeToUpdate->vehicles)): ?>
+                                        <?php foreach($employeeToUpdate->vehicles as $vehicle): ?>
+                                            <div class="form-row col-md-12">
+                                                <div class="form-group col-md-4 mb-2">
+                                                    <label>Vehicle #</label>
+                                                    <input type="text" class="form-control" value="<?php echo e($vehicle->vehicle_number); ?>" name="vehicle_number[]" required>
+                                                </div>
+                                                <div class="form-group col-md-6 mb-2">
+                                                    <label>Vehicle Description</label>
+                                                    <input type="text" class="form-control" value="<?php echo e($vehicle->vehicle_description); ?>" name="vehicle_description[]" required>
+                                                </div>
+                                                <div class="form-group col-md-2" style="margin-top: 2.0rem">
+                                                    <a class="btn btn-danger btn-sm white" id="removeVehicle"><i class="la la-trash-o"></i></a>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-info btn-sm white" id="addVehicle"><i class="la la-plus-circle"></i> Add More Vehicle </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Employment Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="bu-form">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Select Department <br><small>(Company Name - Business Unit - Department) / Cost Center</small></label>
+                                        <select class="select2 form-control" name="department" required>
+                                            <?php foreach($departments as $department): ?>
+                                                <option <?php echo e($employeeToUpdate->department_id == $department->id ? 'selected="Selected"':""); ?> value="<?php echo e($department->id); ?>"><?php echo e($department->businessUnit->company->company_name.' - '.$department->businessUnit->bu_name.' - '.$department->department_name .' / '.$department->cost_center); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Designation</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->designation); ?>" name="designation" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Grade</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->grade); ?>" name="grade" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Date of Joining</label>
+                                        <input type="date" class="form-control" value="<?php echo e($employeeToUpdate->date_of_joining); ?>" name="date_of_joining" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>User Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->user_name); ?>" name="user_name" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Level</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->level); ?>" name="level" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Is Director</label>
+                                        <select class="select2 form-control is_director" name="is_director" required>
+                                            <option value="No" <?php echo e($employeeToUpdate->is_director == null?"selected":""); ?>>No</option>
+                                            <option value="Yes" <?php echo e($employeeToUpdate->is_director == '1'?"selected":""); ?>>Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Custom View</label>
+                                        <input type="text" class="form-control" value="<?php echo e($employeeToUpdate->custom_view); ?>" name="custom_view">
+                                    </div>
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Approver of</label>
+                                        <select class="select2 form-control" name="approver_of[]" multiple>
+                                            <?php if(count($employeeToUpdate->divisionsApprover) > 0): ?>
+                                                <?php foreach($businessUnits as $businessUnit): ?>
+                                                    <option
+                                                        <?php foreach($employeeToUpdate->divisionsApprover as $approver): ?>
+                                                        <?php echo e($approver->id == $businessUnit->id ? 'selected="Selected"':""); ?>
+
+                                                        <?php endforeach; ?>
+                                                        value="<?php echo e($businessUnit->id); ?>"><?php echo e($businessUnit->company->company_name.' - '.$businessUnit->bu_name); ?>
+
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <?php foreach($businessUnits as $businessUnit): ?>
+                                                    <option value="<?php echo e($businessUnit->id); ?>"><?php echo e($businessUnit->company->company_name.' - '.$businessUnit->bu_name); ?></option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer" id="bu-form-footer">
+                                <button class="btn btn-success btn-sm" type="submit"><i class="la la-paper-plane-o"></i> Update Employee </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

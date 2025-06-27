@@ -1,0 +1,109 @@
+
+
+<?php $__env->startSection('header'); ?>
+<style>
+    body {
+        font-family: "72", Arial, Helvetica, sans-serif; /* Set the font-family for the body */
+    }
+    footer.footer-sf {
+        /* position: fixed; */
+        bottom: 0;
+        width: 100%;
+        padding: 10px 20px;
+        background-color: #414042 !important; /* Footer background with important */
+        color: lightgrey;
+        text-align: left;
+        font-size: 0.8rem; /* Small font size */
+        display: flex;
+        justify-content: space-between; /* Align the text on the left and image on the right */
+        align-items: center;
+    }
+    .footer-logo {
+        max-width: 250px; /* Adjust the size of the image */
+        height: auto;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px; /* Increase padding for a better feel */
+        font-size: 1rem; /* Slightly increase font size */
+        background-color: black;
+        color: white;
+        border: 1px solid #717E8B; /* Optional: Add a border for better visibility */
+        border-radius: 8px; /* Optional: Slightly rounded edges */
+    }
+</style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('body'); ?>
+<div class="content-body" style="background-color: #414042; min-height: 100vh;">
+    <section class="d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-6 col-sm-10 text-center">
+                    <div class="p-4">
+                        <!-- Logo -->
+                        <img src="<?php echo e(asset('assets/img/logo.jpeg')); ?>" alt="Company Logo" class="img-fluid mb-3" style="max-width: 100%; height: auto;">
+
+                        <!-- Text -->
+                        <p class="text-white text-justify mb-4" style="font-size: 1rem;">
+                            To log in to company <strong>packagesli</strong>, enter your username and password below.
+                        </p>
+
+                        <!-- Form -->
+                        <form action="<?php echo e(URL::to('sf-login')); ?>" method="post">
+                            <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                            <?php if(Session::has("error")): ?>
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Warning:</strong> <?php echo e(Session::get("error")); ?>
+
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if(Session::has("success")): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>Success:</strong> <?php echo e(Session::get("success")); ?>
+
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Username -->
+                            <div class="form-group text-left">
+                                <label for="username" class="text-light" style="color: #717E8B;">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Username" value="<?php echo e(old('username')); ?>" style="background-color: black; color: white;">
+                            </div>
+
+                            <!-- Password -->
+                            <div class="form-group text-left">
+                                <label for="password" class="text-light" style="color: #717E8B;">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password" style="background-color: black; color: white;">
+                            </div>
+
+                            <!-- Login Button -->
+                            <button type="submit" class="btn btn-block" style="background-color: #0789FA; color: black; border-radius: 25px;">
+
+                                <i class="ft-unlock"></i> Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer-sf d-flex flex-column flex-md-row align-items-center justify-content-between">
+    <span class="text-center text-md-left">
+        © 2024 SAP SuccessFactors, Inc. All rights reserved. 
+        <a href="#" class="text-muted text-decoration-underline">Show version info</a>
+    </span>
+    <img src="<?php echo e(asset('assets/img/sf-logo.png')); ?>" alt="Footer Image" class="footer-logo img-fluid">
+</footer>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.login-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

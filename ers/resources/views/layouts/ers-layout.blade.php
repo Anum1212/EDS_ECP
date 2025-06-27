@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Employee Reimbursement System - Packages Group">
+    <meta name="keywords" content="voucher, travelling, allowances">
+    <meta name="author" content="PIXINVENT">
+    <title>E C P</title>
+    <link rel="apple-touch-icon" href="{{ asset('assets/img/SF.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/SF.ico') }}">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Quicksand:300,400,500,700"
+        rel="stylesheet">
+    <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css" rel="stylesheet">
+    <!-- BEGIN VENDOR CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/vendors.css') }}">
+    <!-- END VENDOR CSS-->
+    <!-- BEGIN MODERN CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/app.css') }}">
+    <!-- END MODERN CSS-->
+    <!-- BEGIN Page Level CSS-->
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('app-assets/css/core/menu/menu-types/horizontal-menu.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/core/colors/palette-gradient.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('app-assets/vendors/css/charts/jquery-jvectormap-2.0.3.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/charts/morris.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/fonts/simple-line-icons/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/core/colors/palette-gradient.css') }}">
+    <!-- END Page Level CSS-->
+    <!-- BEGIN Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        /* body { */
+        /* overflow: hidden; // This will hide both horizontal and vertical scrollbars */
+        /* } */
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+            display: none;
+        }
+
+        .dropdown-submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            color: #000;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .tile-text {
+            color: black !important;
+        }
+
+        .header-navbar {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 52px !important;
+            min-height: unset !important;
+        }
+
+        .navbar-header .brand-text {
+            margin-left: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .dropdown-toggle {
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: #e2e6ea;
+            border-radius: 27px;
+        }
+
+        .dropdown-menu {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            padding: 21px 0px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-header .brand-text {
+                font-size: 1.2rem;
+            }
+
+            .navbar-header .brand-logo {
+                width: 50px;
+            }
+
+            .dropdown-toggle {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        .custom-dropdown {
+            border: 1px solid black;
+            border-radius: 5px;
+            box-shadow: none;
+            width: 220px;
+        }
+
+        .custom-dropdown .dropdown-item {
+            padding: 10px 20px;
+        }
+
+        .custom-dropdown .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .navbar-nav .nav-item .badge {
+            position: absolute;
+            top: 8px;
+            right: -6px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        .dropdown-menu {
+            width: 300px;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+        }
+
+        .dropdown-item strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-item p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .nav-link.dropdown-toggle::after {
+            display: none;
+        }
+
+        .nav-item .badge {
+            position: absolute;
+            top: -8px;
+            right: -6px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            z-index: 10;
+            line-height: 1;
+        }
+
+        .nav-item .las.la-check-circle {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            width: 300px;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+        }
+
+        .dropdown-item strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-item p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .nav-item .badge {
+            position: absolute;
+            top: 18px !important;
+            right: 8px !important;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            z-index: 10;
+            line-height: 1;
+        }
+
+        .nav-item .la-check-circle {
+            font-size: 24px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .navbar-nav.ml-auto {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item .badge {
+            position: absolute;
+            top: -8px;
+            right: -6px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            z-index: 10;
+        }
+    </style>
+    <!-- END Custom CSS-->
+    @yield('header')
+</head>
+
+<body class="horizontal-layout horizontal-menu 2-columns   menu-expanded" data-open="hover" data-menu="horizontal-menu"
+    data-col="2-columns">
+    <!-- fixed-top-->
+    <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-static-top navbar-light navbar-brand-center"
+        style="height: 52px !important!">
+        <div class="navbar-wrapper">
+            <div class="navbar-header">
+                <ul class="nav navbar-nav flex-row">
+                    <!-- Mobile menu toggle -->
+                    <li class="nav-item mobile-menu d-md-none mr-auto">
+                        <a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#">
+                            <i class="ft-menu font-large-1"></i>
+                        </a>
+                    </li>
+                    <!-- Brand logo and title -->
+                    <li class="nav-item">
+                        <a class="navbar-brand" href="{{ URL::to('dashboard') }}">
+                            <img class="brand-logo" style="width: 70px" alt="SAP logo"
+                                src="{{ asset('assets/img/SAP-logo.png') }}">
+                            <h3 class="brand-text">E C P</h3>
+                        </a>
+                    </li>
+                    <!-- Mobile collapse button -->
+                    <li class="nav-item d-md-none">
+                        <a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile">
+                            <i class="la la-ellipsis-v"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-container content">
+                <div class="collapse navbar-collapse" id="navbar-mobile">
+                    <!-- Left-side dropdown with a black border -->
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown"
+                                style="color: black; font-weight: bold;">
+                                <img src="{{ asset('assets/img/packages-group.png') }}" alt="Home Icon"
+                                    class="home-icon" style="width: 35px; height: 35px; margin-right: 8px;">
+                                Home
+                                <i class="fa fa-caret-down" style="margin-left: 8px;"></i>
+                            </a>
+                            <div class="dropdown-menu custom-dropdown">
+                                <a class="dropdown-item" href="{{ URL::to('dashboard') }}">Home</a>
+                                <a class="dropdown-item" href="{{ URL::to('voucher/add') }}">Claims</a>
+                                <a class="dropdown-item" href="{{ URL::to('travel-order/add') }}">Travel Orders</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- Right-side user profile -->
+                    <ul class="nav navbar-nav ml-auto">
+
+                        <!-- To-Do Item with Icon as Dropdown -->
+                        <!--@if ($employee->level != 0)
+-->
+                        <!-- <li class="nav-item dropdown position-relative">-->
+                        <!--     <a class="nav-link" href="#" id="navbarToDo" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                        <!--         <i class="la la-check-circle" style="font-size: 24px;"></i> <!-- To-Do Icon -->
+                        <!--         <span class="badge badge-danger">-->
+                        <!--             {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}-->
+                        <!--         </span>-->
+                        <!--     </a>-->
+
+                        <!--     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarToDo">-->
+                        <!-- Pending Section -->
+                        <!--         <a class="dropdown-item" href="{{ URL::to('vouchers/require/approval') }}">-->
+                        <!--             <strong style="margin-left: 8%">Pending</strong>-->
+                        <!--             <span style="background-color: #FF9149; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">-->
+                        <!--                 {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}-->
+                        <!--             </span>-->
+                        <!--         </a>-->
+
+                        <!-- Approved Section -->
+                        <!--         <a class="dropdown-item" href="{{ URL::to('vouchers/approver/approved') }}">-->
+                        <!--             <strong style="margin-left: 8%">Approved</strong>-->
+                        <!--             <span style="background-color: #28D094; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">-->
+                        <!--                 {{ count($employee->vouchersApproved) + count($employee->travelOrdersApproved) }}-->
+                        <!--             </span>-->
+                        <!--         </a>-->
+
+                        <!-- Rejected Section -->
+                        <!--         <a class="dropdown-item" href="{{ URL::to('vouchers/approver/declined') }}">-->
+                        <!--             <strong style="margin-left: 8%">Declined</strong>-->
+                        <!--             <span style="background-color: #1E9FF2; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">-->
+                        <!--                 {{ count($employee->vouchersDeclined) + count($employee->travelOrdersDeclined) }}-->
+                        <!--             </span>-->
+
+                        <!--         </a>-->
+                        <!--     </div>-->
+                        <!-- </li>-->
+                        <!--
+@endif-->
+
+                        <!--Admin IDs-->
+                        @if ($employee->id == 1 || $employee->id == 2 || $employee->id == 3847 || $employee->id == 3848 || $employee->id == 3849 || $employee->id == 3850 || $employee->id == 3851 || $employee->id == 7362 || $employee->id == 7363)
+                            <li class="nav-item dropdown position-relative">
+                                <a class="nav-link" href="#" id="navbarToDo" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="la la-cog" style="font-size: 24px;"></i>
+                                    <span class="badge badge-danger">
+                                        {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}
+                                    </span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarToDo">
+                                    <!-- Pending Section -->
+                                    <a class="dropdown-item" href="{{ URL::to('vouchers/status/update') }}">
+                                        <strong style="margin-left: 8%">Receive Documents</strong>
+                                    </a>
+
+                                    <!-- Approved Section -->
+                                    <a class="dropdown-item" href="{{ URL::to('process/vouchers') }}">
+                                        <strong style="margin-left: 8%">Process Claims</strong>
+                                    </a>
+
+                                    <!-- Rejected Section -->
+                                    <a class="dropdown-item" href="{{ URL::to('process/travel-orders') }}">
+                                        <strong style="margin-left: 8%">Process Travel Orders</strong>
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ URL::to('processed/vouchers') }}">
+                                        <strong style="margin-left: 8%">Processed Claims</strong>
+
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ URL::to('rejected/vouchers') }}">
+                                        <strong style="margin-left: 8%">Rejected Claims Travel Orders</strong>
+
+                                    </a>
+
+                                    {{-- <a class="dropdown-item" href="{{URL::to('extract/stats')}}">
+                                <strong style="margin-left: 8%">Extract Stats</strong>
+                                
+                            </a> --}}
+                                </div>
+                            </li>
+                        @endif
+
+                        <ul class="nav navbar-nav ml-auto d-flex align-items-center">
+                            <!-- To-Do Item with Icon as Dropdown -->
+                            @if ($employee->level != 0 || $employee->user_name == "medicines-mother-admin")
+                                <li class="nav-item dropdown position-relative">
+                                    <a class="nav-link" href="#" id="navbarToDo" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="la la-check-circle" style="font-size: 24px;"></i>
+                                        <span class="badge badge-danger">
+                                            {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}
+                                        </span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarToDo">
+                                        <!-- Pending Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('vouchers/require/approval') }}">
+                                            <strong style="margin-left: 8%">Pending</strong>
+                                            <span
+                                                style="background-color: #FF9149; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}
+                                            </span>
+                                        </a>
+
+                                        <!-- Approved Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('vouchers/approver/approved') }}">
+                                            <strong style="margin-left: 8%">Approved</strong>
+                                            <span
+                                                style="background-color: #28D094; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->vouchersApproved) + count($employee->travelOrdersApproved) }}
+                                            </span>
+                                        </a>
+
+                                        <!-- Rejected Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('vouchers/approver/declined') }}">
+                                            <strong style="margin-left: 8%">Declined</strong>
+                                            <span
+                                                style="background-color: #1E9FF2; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->vouchersDeclined) + count($employee->travelOrdersDeclined) }}
+                                            </span>
+                                        </a>
+
+
+                                        {{-- Y-Lunch --}}
+                                        <!-- Pending Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/unapproved') }}">
+                                            <strong style="margin-left: 8%">Pending</strong>
+                                            <span
+                                                style="background-color: #FF9149; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->unapprovedYLunch) }}
+                                            </span>
+                                        </a>
+
+                                        <!-- Approved Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/approved') }}">
+                                            <strong style="margin-left: 8%">Approved</strong>
+                                            <span
+                                                style="background-color: #28D094; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->approvedYLunch) }}
+                                            </span>
+                                        </a>
+
+                                        <!-- Rejected Section -->
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/rejected') }}">
+                                            <strong style="margin-left: 8%">Declined</strong>
+                                            <span
+                                                style="background-color: #1E9FF2; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                {{ count($employee->rejectedYLunch) }}
+                                            </span>
+                                        </a>
+                                        @if (in_array($employee->user_name, ['pl-medical-officer', 'sp-medical-officer', 'bsp-medical-officer', 'dic-medical-officer', 'prel-medical-officer']))
+                                            <a class="dropdown-item" href="{{ URL::to('process/medical/vouchers') }}">
+                                                <strong style="">🎯 Process Medical Claims</strong>
+                                            </a>
+                                        @endif    
+                                    </div>
+                                </li>
+                            @endif
+                            <!-- User Profile Dropdown -->
+                            <li class="dropdown dropdown-user nav-item">
+                                <a class="nav-link" href="#" data-toggle="dropdown"
+                                    style="display: flex; align-items: center;">
+                                    @if(isset($photo) && isset($photo_mimetype))
+                                        <img src="data:{{$photo_mimetype}};base64,{{ base64_encode($photo) }}" alt="User Avatar"
+                                            class="rounded-circle mr-1" style="width: 30px; height: 30px;">
+                                    @else
+                                        <img src="{{ asset('assets/img/user-placeholder.jpg') }}" alt="User Avatar"
+                                            class="rounded-circle mr-1" style="width: 30px; height: 30px;">
+                                    @endif        
+                                    <span class="user-name text-bold-700"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" style="width: 350px;">
+                                    <a class="dropdown-item" style="font-weight: bold">
+                                        {{ $employee->employee_name }} ({{ $employee->employee_number }})
+                                    </a>
+                                    <a class="dropdown-item" href="{{ URL::to('logout') }}">
+                                        <i class="ft-power"></i> Logout
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div id="jsMessage"></div>
+            @if (count($errors) > 0)
+                <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                    <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Oh!</strong> Please fix the following issues to continue
+                    <ul class="error">
+                        @foreach ($errors->all() as $error)
+                            <li style="list-style: circle">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            @if (Session::has('error'))
+                <div class="alert alert-dismissible mb-2" role="alert"
+                    style="background-color: #fff3e0; color: #e65100; border-left: 4px solid #e65100; border-radius: 4px; padding: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); font-family: 'SAP 72', sans-serif;">
+                    <span class="alert-icon" style="color: #e65100; margin-right: 8px;"><i
+                            class="la la-exclamation-circle"></i></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                        style="background: none; border: none; color: #e65100;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Warning:</strong> {{ Session::get('error') }}
+                </div>
+            @endif
+            @if (Session::has('systemError'))
+                <div class="alert alert-dismissible mb-2" role="alert"
+                    style="background-color: #fff3e0; color: #e65100; border-left: 4px solid #e65100; border-radius: 4px; padding: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); font-family: 'SAP 72', sans-serif;">
+                    <span class="alert-icon" style="color: #e65100; margin-right: 8px;"><i
+                            class="la la-exclamation-circle"></i></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                        style="background: none; border: none; color: #e65100;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Warning:</strong> {{ Session::get('systemError') }}
+                </div>
+            @endif
+            @if (Session::has('success'))
+                <div class="alert alert-dismissible mb-2" role="alert"
+                    style="background-color: #e3f2fd; color: #0d47a1; border-left: 4px solid #0d47a1; border-radius: 4px; padding: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); font-family: 'SAP 72', sans-serif;">
+                    <span class="alert-icon" style="color: #0d47a1; margin-right: 8px;"><i
+                            class="la la-check-circle"></i></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                        style="background: none; border: none; color: #0d47a1;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>Success:</strong> {{ Session::get('success') }}
+                </div>
+            @endif
+            @yield('body')
+        </div>
+    </div>
+    {{-- <footer class="footer footer-static footer-light navbar-shadow">
+    <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+      <span class="float-md-left d-block d-md-inline-block">Copyright © 2024 SAP SuccessFactors, Inc. All rights reserved. These online services are SuccessFactors confidential and proprietary and for use by authorized SuccessFactors customers only.</span>
+    </p>
+</footer> --}}
+    <!-- BEGIN VENDOR JS-->
+    <script src="{{ asset('app-assets/vendors/js/vendors.min.js') }}" type="text/javascript"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script type="text/javascript" src="{{ asset('app-assets/vendors/js/ui/jquery.sticky.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('app-assets/vendors/js/charts/jquery.sparkline.min.js') }}"></script>
+    <script src="{{ asset('app-assets/vendors/js/charts/chart.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('app-assets/vendors/js/charts/raphael-min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('app-assets/vendors/js/charts/morris.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('app-assets/vendors/js/charts/jvector/jquery-jvectormap-2.0.3.min.js') }}"
+        type="text/javascript"></script>
+    <script src="{{ asset('app-assets/vendors/js/charts/jvector/jquery-jvectormap-world-mill.js') }}"
+        type="text/javascript"></script>
+    <script src="{{ asset('app-assets/data/jvector/visitor-data.js') }}" type="text/javascript"></script>
+    <!-- END PAGE VENDOR JS-->
+    <!-- BEGIN MODERN JS-->
+    <script src="{{ asset('app-assets/js/core/app-menu.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('app-assets/js/core/app.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('app-assets/js/scripts/customizer.js') }}" type="text/javascript"></script>
+    <!-- END MODERN JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    <script type="text/javascript" src="{{ asset('app-assets/js/scripts/ui/breadcrumbs-with-stats.js') }}"></script>
+    <!-- END PAGE LEVEL JS-->
+    @yield('footer')
+</body>
+
+</html>

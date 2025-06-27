@@ -1,0 +1,22 @@
+<?php /**/ $departments = \App\Department::with('businessUnit', 'businessUnit.company')->get(); /**/ ?>
+<div class="form-group col-md-12 mb-2">
+    <label>Select Departments</label>
+    <select class="form-control select2" name="departments[]" data-placeholder="Select" multiple>
+        <?php if(count($departmentFilters) > 0): ?>
+            <?php foreach($departments as $department): ?>
+                <option
+                    <?php foreach($departmentFilters as $filter): ?>
+                    <?php echo e($filter == $department->id ? 'selected':""); ?>
+
+                    <?php endforeach; ?>
+                    value="<?php echo e($department->id); ?>"><?php echo e($department->department_name.' / '.$department->businessUnit->bu_name); ?></option>
+                </option>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <option></option>
+            <?php foreach($departments as $department): ?>
+                <option value="<?php echo e($department->id); ?>"><?php echo e($department->department_name.' / '.$department->businessUnit->bu_name); ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+</div>

@@ -1,0 +1,45 @@
+<?php $__env->startSection('header'); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/vendors/css/forms/selects/select2.min.css')); ?>">
+    <style>
+        .content {
+            background-color: #414042; /* Grey background */
+        }
+    </style>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <?php /* <?php echo e($vouchers); ?> */ ?>
+    <?php if(View()->exists($customView)): ?>
+        <?php echo $__env->make($customView, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php endif; ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+    <script src="<?php echo e(asset('app-assets/vendors/js/forms/select/select2.full.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/forms/select/form-select2.js')); ?>" type="text/javascript"></script>
+    <script>
+        $('.voucher').on('change',function(e) {
+            var voucher_id = $('.voucher').val();
+            console.log(voucher_id);
+            $.ajax({
+                url: "<?php echo URL::to('get/voucher/details'); ?>",
+                method: "POST",
+                data:{
+                    voucher_id: voucher_id
+                },
+                success:function(response){
+                    if(response == 0){
+                        $('#voucher-details').html('');
+                        $('#error').modal('show');
+                    }
+                    else{
+                        $('#voucher-details').html('');
+                        $('#voucher-details').append(response);
+                    }
+                },
+                failure:function(response){
+
+                }
+            })
+        });
+    </script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.ers-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,16 @@
+<div class="form-row">
+    <div class="form-group col-md-4 mb-2">
+        <select class="select2 form-control voucherCategory" name="voucher_categories_<?php echo e($count); ?>" id="voucher_categories_<?php echo e($count); ?>" required>
+            <option value="">Select Category</option>
+            <?php foreach($categories as $category): ?>
+                <option value="<?php echo e($category->id); ?>" data-view="<?php echo e($category->view); ?>"><?php echo e($category->category_name); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <input type="text" class="form-control" name="total_amount_<?php echo e($count); ?>" id="total_voucher_categories_<?php echo e($count); ?>" placeholder="Total Amount (PKR)" readonly>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-danger btn-sm white" id="removeCategory"><i class="la la-trash-o"></i></a>
+    </div>
+</div>

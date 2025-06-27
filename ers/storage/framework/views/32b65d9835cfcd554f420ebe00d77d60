@@ -1,0 +1,40 @@
+<div class="form-row">
+    <div class="form-group col-md-4 mb-2">
+        <label>Duration of Trip</label>
+        <div class='input-group'>
+            <input type='text' class="form-control datetime" name="date_range_<?php echo e($itemCount); ?>" required/>
+            <div class="input-group-append">
+                <span class="input-group-text">
+                  <span class="la la-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <label>From Location</label>
+        <input type="text" class="form-control" data-id='225' name="from_<?php echo e($itemCount); ?>" id="from_<?php echo e($itemCount); ?>" required>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <label>To Location</label>
+        <input type="text" class="form-control" data-id='225' name="to_<?php echo e($itemCount); ?>" id="to_<?php echo e($itemCount); ?>" required>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <label>Total Distance (Km)</label>
+        <input type="text" class="form-control" value="0" name="kms_<?php echo e($itemCount); ?>" id="kms_<?php echo e($itemCount); ?>" required>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <label>Eligible period for DA</label>
+        <input type="text" class="form-control" data-id='225' name="da_eligible_period_<?php echo e($itemCount); ?>" id="da_eligible_period_<?php echo e($itemCount); ?>" readonly>
+    </div>
+    <div class="form-group col-md-2 mb-2">
+        <label>Amount (PKR)</label>
+        <input type="text" class="form-control" value="0" name="amount_<?php echo e($itemCount); ?>" id="amount_<?php echo e($itemCount); ?>" readonly>
+    </div>
+    <div class="form-group col-md-2 mb-2" hidden>
+        <label>Category</label>
+        <input type="text" class="form-control" value="<?php echo e($categoryID); ?>" name="category_<?php echo e($itemCount); ?>" id="category_<?php echo e($itemCount); ?>" readonly>
+    </div>
+    <div class="form-group col-md-2" style="margin-top: 2.0rem">
+        <a class="btn btn-danger btn-sm white" id="removeCategoryItem"><i class="la la-trash-o"></i></a>
+    </div>
+</div>

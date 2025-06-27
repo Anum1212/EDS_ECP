@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Employee Claim Portal</title>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: none;
+            width: 100% !important;
+            height: 100%;
+            background-color: #FFFFFF;
+        }
+
+        .container {
+            background-color: #FFFFFF;
+        }
+
+        header,
+        footer {
+            background-color: #4D4A4F;
+            border-bottom: 10px solid #F0AB00;
+            padding: 13px 13px 0px 13px;
+            text-align: center;
+            color: white
+        }
+
+        footer a{
+            color: #F0AB00;
+        }
+
+        .table {
+            width: 100%;
+            max-width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+            box-sizing: inherit;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .table>thead>tr>th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
+            padding: 8px;
+            line-height: 1.42857143;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        .table>tbody>tr>td {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="body-wrap">
+        <tr>
+            <td></td>
+            <td class="container">
+                <div class="content">
+                    <table>
+                        <tr>
+                            <td>
+                                <header>
+                                <h2>Travel Order Submitted</h2>
+                            </header>
+                                <p>Hello <strong><?php echo e($client->nick_name); ?></strong>,</p>
+                                <p><?php echo e($employee->employee_name); ?> has submitted the travel order for your approval in
+                                    Employee Claim Portal.<br></p>
+                                <p>Travel Order Details are as under:-<br></p>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php /* */ $count = 1 /* */ ?>
+                                        <?php foreach($voucher->categories($voucher->id) as $category): ?>
+                                            <tr>
+                                                <td style="vertical-align: top">
+                                                    <p><?php echo e($count++); ?></p>
+                                                </td>
+                                                <td>
+                                                    <p style="margin-bottom: 0px"><?php echo e($category->category_name); ?></p>
+                                                    <?php if($category->category_name == 'Misc'): ?>
+                                                        <?php foreach($voucher->voucherItems as $item): ?>
+                                                            <?php if($item->category->category_name == $category->category_name): ?>
+                                                                <?php if(isset($item->description)): ?>
+                                                                    <small><?php echo $item->description; ?></small><br>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <?php if($voucher->totalAmount($voucher->id) == 0 && $voucher->totalAmountForex($voucher->id) > 0): ?>
+                                                    <td style="vertical-align: top"><small>USD
+                                                        </small><?php echo e(number_format($voucher->categoryTotalAmountForex($voucher->id, $category->id), 0)); ?>
+
+                                                    </td>
+                                                <?php else: ?>
+                                                    <td style="vertical-align: top"><small>PKR
+                                                        </small><?php echo e(number_format($voucher->categoryTotalAmount($voucher->id, $category->id), 0)); ?>
+
+                                                    </td>
+                                                <?php endif; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        <?php /* */ $count = 1 /* */ ?>
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <?php if($voucher->totalAmount($voucher->id) == 0 && $voucher->totalAmountForex($voucher->id) > 0): ?>
+                                    <p>Total: <strong><small>USD
+                                            </small><?php echo e(number_format($voucher->totalAmountForex($voucher->id), 0)); ?></strong>
+                                    </p><br>
+                                <?php else: ?>
+                                    <p>Total: <strong><small>PKR
+                                            </small><?php echo e(number_format($voucher->totalAmount($voucher->id), 0)); ?></strong>
+                                    </p><br>
+                                <?php endif; ?>
+                                <footer>
+                                    <p>Please login to <a href="https://hcm44.packagesgroup.com"
+                                        style="text-decoration: none">Employee Claim Portal</a> in order to approve this
+                                    travel order.</p><br>
+                                </footer>
+                                <small>This is a system generated email. Please do not reply.</small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+.content {
+    background-color: #414042;
+    /* Grey background */
+}
+
+.label-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.label-bar .label {
+    padding: 0 8px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.form-control,
+.custom-input {
+    height: 35%;
+}

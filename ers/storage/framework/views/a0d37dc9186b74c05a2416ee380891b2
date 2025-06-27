@@ -1,0 +1,57 @@
+<?php if(count($employee->vehicles) > 0): ?>
+    <div class="form-row">
+        <div class="form-group col-md-2 mb-2">
+            <label>Date of Receipt</label>
+            <input type="date" class="form-control" name="date_<?php echo e($itemCount); ?>" min="<?php echo e(date('Y-m-d', strtotime(date('Y-m-d').' - 3 months'))); ?>" id="date_<?php echo e($itemCount); ?>" required>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Receipt #</label>
+            <input type="text" class="form-control" name="receipt_number_<?php echo e($itemCount); ?>" id="receipt_number_<?php echo e($itemCount); ?>" required>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Vehicle #</label>
+            <select class="select2 form-control" name="vehicle_no_<?php echo e($itemCount); ?>" id="vehicle_no_<?php echo e($itemCount); ?>" required>
+                <?php foreach($employee->vehicles as $vehicle): ?>
+                    <option value="<?php echo e($vehicle->vehicle_number); ?>"><?php echo e($vehicle->vehicle_number); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Official Travel</label>
+            <select class="select2 form-control official_travel" name="official_travel_<?php echo e($itemCount); ?>" id="official_travel_<?php echo e($itemCount); ?>" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2 mb-2" hidden>
+            <label>Amount (PKR)</label>
+            <input type="text" class="form-control" value="0" name="amount_<?php echo e($itemCount); ?>" id="amount_<?php echo e($itemCount); ?>" readonly>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Amount paid</label>
+            <input type="number" class="form-control" min="1" data-id='225' name="amount_paid_<?php echo e($itemCount); ?>" id="amount_paid_<?php echo e($itemCount); ?>" placeholder="PKR" required>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Rate/Litre</label>
+            <input type="number" class="form-control" min="1" value="0" name="rate_per_litre_<?php echo e($itemCount); ?>" id="rate_per_litre_<?php echo e($itemCount); ?>" step="0.01" required>
+        </div>
+        <div class="form-group col-md-1 mb-2">
+            <label>Litres</label>
+            <input type="text" class="form-control" value="0" name="litres_<?php echo e($itemCount); ?>" id="litres_<?php echo e($itemCount); ?>" readonly required>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+            <label>Receipt provided</label>
+            <select class="select2 form-control" name="receipt_provided_<?php echo e($itemCount); ?>" required>
+                <option value="1">Yes</option>
+                <option value="0">No, lost</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2 mb-2" hidden>
+            <label>Category</label>
+            <input type="text" class="form-control" value="<?php echo e($categoryID); ?>" name="category_<?php echo e($itemCount); ?>" id="category_<?php echo e($itemCount); ?>" readonly>
+        </div>
+        <div class="form-group col-md-1" style="margin-top: 2.0rem">
+            <a class="btn btn-danger btn-sm white" id="removeCategoryItem"><i class="la la-trash-o"></i></a>
+        </div>
+    </div>
+<?php endif; ?>

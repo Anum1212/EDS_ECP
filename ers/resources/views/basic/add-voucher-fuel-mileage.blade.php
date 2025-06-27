@@ -1,0 +1,1078 @@
+@extends('layouts.ers-layout')
+@section('header')
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/forms/selects/select2.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/pickers/daterange/daterangepicker.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/pickers/daterange/daterange.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/custom/daterangepicker.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/custom/air-date-picker/css/datepicker.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/plugins/animate/animate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/custom/vouchers.css')}}">
+@endsection
+
+@section('body')
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="{{ URL::to($storingURL) }}" method="post" id="voucher-form" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="itemCount" id="itemCount" value="{{ isset($voucher) ? $itemCount : 1 }}">
+            <input type="hidden" name="claimType" id="claimType" value="medicines-mother">
+            <div class="row justify-content-center">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title font-weight-bold" id="file-repeater">Your Profile</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- User image on the right -->
+                                    <div class="col-md-3 order-md-2 text-center">
+                                        @if ($photo != null && $photo_mimetype != null)
+                                            <img src="data:{{ $photo_mimetype }};base64,{{ base64_encode($photo) }}"
+                                                alt="Profile Image" class="img-fluid rounded-circle w-50">
+                                        @else
+                                            <img src="{{ asset('assets/img/user-placeholder-removebg.png') }}"
+                                                alt="Profile Image" class="img-fluid rounded-circle w-50">
+                                        @endif
+                                        <p class="mt-2"><strong>{{ $employee->employee_name }}</strong></p>
+                                    </div>
+                                    <!-- Profile details -->
+                                    <div class="col-md-9 order-md-1 w-100 overflow-auto">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-right"><strong>Employee ID: </strong></td>
+                                                    <td>{{ $employee_sf_data->employee_number }}</td>
+                                                    <td class="text-right"><strong>Name: </strong></td>
+                                                    <td>{{ $employee->employee_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Grade: </strong></td>
+                                                    <td>{{ $employee_sf_data->grade }}</td>
+                                                    <td class="text-right"><strong>Designation: </strong></td>
+                                                    <td>{{ $employee_sf_data->designation }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Business Unit: </strong></td>
+                                                    <td>{{ $employee->department->BusinessUnit->bu_name }}</td>
+                                                    <td class="text-right"><strong>Department: </strong></td>
+                                                    <td>{{ $employee->department->department_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Company: </strong></td>
+                                                    <td>{{ $employee->department->BusinessUnit->company->company_name }}
+                                                    </td>
+                                                    <td class="text-right"><strong>Cost Center: </strong></td>
+                                                    <td>{{ $employee_sf_data->cost_center }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Bank: </strong></td>
+                                                    <td>{{ $employee_sf_data->bank }}</td>
+                                                    <td class="text-right"><strong>Account Number: </strong></td>
+                                                    <td>{{ $employee_sf_data->account_number }}</td>
+                                                </tr>
+
+                                                @if($employee->department->BusinessUnit->company->id == '1400' || $employee->department->BusinessUnit->company->id == '1700')
+                                                <tr>
+                                                    <td class="text-right"><strong>Line Manager: </strong></td>
+                                                    <td>{{ isset($employee_sf_data->line_manager->employee->employee_name) ? $employee_sf_data->line_manager->employee->employee_name : 'Not Found' }}
+                                                    </td>
+                                                    <td class="text-right"><strong>Business Unit Approver: </strong>
+                                                    </td>
+                                                    <td>{{ isset($employee_sf_data->BusinessUnit->bu_head->employee->employee_name) ? $employee_sf_data->BusinessUnit->bu_head->employee->employee_name : 'Not Found' }}
+                                                    </td>
+                                                </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Cost Center Section -->
+                                @if(isset($cost_centers))
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title" id="file-repeater" style="font-weight: bold;">Charge to Cost Center</h4>
+                                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-3 mb-2" id="costCenter">
+                                                        <select class="form-control costCenter select2" style="height: 140%;" name="charged_cost_center" required>
+                                                            <option value="">Select</option>
+                                                            @foreach($cost_centers as $cost_center)
+                                                                <option value="{{ $cost_center->cost_center }}">{{ $cost_center->cost_center.' - '.$cost_center->cost_center_description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                <!-- Enter Details Section -->
+                                <div class="col-md-12">
+                                    <hr>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title" id="file-repeater" style="font-weight: bold;">Enter Details</h4>
+                                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                                            <div class="heading-elements">
+                                                <ul class="list-inline mb-0">
+                                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div id="rowContainer">
+                                                    {{-- Fetch categories based on the company --}}
+                                                    {{--*/ $categories = \App\Category::where('company_id',$employee->department->businessUnit->company->id)->where('category_name','Local - DA')->Orwhere('category_name','Foreign - DA')->Orwhere('category_name','Local - DA (via Air)')->get(); /*--}}
+                                                    {{--*/ $categories = \App\Category::where('company_id', $employee->department->businessUnit->company->id)
+                                                        ->where(function ($query) {
+                                                            $query->where('category_name', 'LIKE', '%Fuel - Mileage%');
+                                                        })
+                                                        ->get();
+                                                    /*--}}
+                                                    <div id="category-form">
+                                                        <!-- Label bar (only appears once, not cloned) -->
+                                                        <div class="label-bar col-md-12">
+                                                            <div class="col-md-2 label">Category<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Date<span class="required">*</span></div>
+                                                            <div class="col-md-1 label">From<span class="required">*</span></div>
+                                                            <div class="col-md-1 label">To<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Mode of Travel<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Distance Travelled (Km)<span class="required">*</span></div>
+                                                            
+                                                        </div>
+
+                                                        <div id="form-rows">
+                                                            @if(count($employee->vehicles) == 0)
+                                                            @if(isset($voucher))
+                                                                @foreach($voucher->categoryItems($voucher->id) as $item)
+                                                                    {{--*/ $itemCount++ /*--}}
+                                                                    <div class="form-row">
+                                                                        <div class="form-group col-md-2">
+                                                                            <select name="category_{{$itemCount}}" id="category_{{$itemCount}}" class="form-control custom-input" style="height: 50%;" onchange="checkCategory(this)">
+                                                                                <option value="" disabled selected>Select Category</option>
+                                                                                @foreach($categories as $category)
+                                                                                    @if($category->enabled)
+                                                                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>   
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <input type="date" class="form-control custom-input" name="date_{{$itemCount}}" id="date_{{$itemCount}}" min="{{date('Y-m-d', strtotime(date('Y-m-d').' - 3 months'))}}" value="{{date('Y-m-d', strtotime($item->date_from))}}" required>
+                                                                        </div>                                                            
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="from_{{$itemCount}}" id="from_{{$itemCount}}" value="{{$item->description}}" required>
+                                                                        </div>                                                                        
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="to_{{$itemCount}}" id="to_{{$itemCount}}" value="{{$item->description}}" required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <select class="form-control select-custom" name="mode_of_travel_{{$itemCount}}" style="height: 50%;" required>
+                                                                                <option></option>
+                                                                                <option value="Car">Car</option>
+                                                                                <option value="Bike">Bike</option>
+                                                                            </select>
+                                                                        </div>                                                                        
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="kms_{{$itemCount}}" id="kms_{{$itemCount}}" value="{{$item->description}}" required>
+                                                                        </div>
+                                                                        <!--<div class="form-group attachment-icon" style="margin-left: 2%;margin-bottom: 2%;">-->
+                                                                        <!--    <label for="attachment_1" class="attachment-label">-->
+                                                                        <!--        <i class="la la-paperclip"></i>-->
+                                                                        <!--    </label>-->
+                                                                        <!--    <input type="file" id="attachment_{{$itemCount}}" name="attachment_{{$itemCount}}" class="attachment-input" style="display: none;margin-left: 2%;margin-bottom: 2%;">-->
+                                                                        <!--</div>-->
+                                                                        <div class="form-group attachment-icon" style="margin-left: 2%; margin-bottom: 2%;">
+                                                                            <label for="attachment_{{$itemCount}}" class="attachment-label" style="cursor: pointer;">
+                                                                                <i class="la la-paperclip"></i>
+                                                                            </label>
+                                                                        
+                                                                            <input
+                                                                                type="file"
+                                                                                id="attachment_{{$itemCount}}"
+                                                                                name="attachment_{{$itemCount}}"
+                                                                                class="attachment-input"
+                                                                                style="display: none;"
+                                                                                onchange="handleAttachmentChange(this)"
+                                                                            >
+                                                                        
+                                                                            <span id="file-name-{{$itemCount}}" class="file-name" style="margin-left: 10px; font-style: italic; color: #555;"></span>
+                                                                            <span id="file-status-{{$itemCount}}" class="file-status" style="margin-left: 5px;"></span>
+                                                                        </div>
+                                                                        <div class="form-group col-md-1" style="">
+                                                                            <a class="btn remove-row"><i class="la la-trash-o light-blue-icon"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                    </div>
+                                                                @endforeach
+                                                                {{--*/ View::share('itemCount', $itemCount) /*--}}
+                                                            @else
+                                                                <div class="form-row" id="template-row">
+                                                                    <div class="form-group col-md-2">
+                                                                        <select name="category_1" id="category_1" class="form-control custom-input" style="height: 50%;" onchange="checkCategory(this)">
+                                                                            <option value="" disabled selected>Select Category</option>
+                                                                            @foreach($categories as $category)
+                                                                                @if($category->enabled)
+                                                                                    <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-2 mb-2">
+                                                                            <input type="date" class="form-control custom-input" name="date_1" id="date_1" min="{{date('Y-m-d', strtotime(date('Y-m-d').' - 3 months'))}}" required>
+                                                                        </div>                                                            
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="from_1" id="from_1" required>
+                                                                        </div>                                                                        
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="to_1" id="to_1"required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <select class="form-control select-custom" name="mode_of_travel_1" style="height: 50%;" required>
+                                                                                <option></option>
+                                                                                <option value="Car">Car</option>
+                                                                                <option value="Bike">Bike</option>
+                                                                            </select>
+                                                                        </div>                                                                        
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="kms_1" id="kms_1" required>
+                                                                        </div>
+                                                                        <!--<div class="form-group attachment-icon" style="margin-left: 2%;margin-bottom: 2%;">-->
+                                                                        <!--    <label for="attachment_1" class="attachment-label">-->
+                                                                        <!--        <i class="la la-paperclip"></i>-->
+                                                                        <!--    </label>-->
+                                                                        <!--    <input type="file" id="attachment_1" name="attachment_1" class="attachment-input" style="display: none;" onchange="handleFileUpload(this)">-->
+                                                                        <!--</div>-->
+                                                                        <div class="form-group attachment-icon" style="margin-left: 2%; margin-bottom: 2%;">
+                                                                        <label for="attachment_1" class="attachment-label" style="cursor: pointer;">
+                                                                            <i class="la la-paperclip"></i>
+                                                                        </label>
+                                                                    
+                                                                        <input
+                                                                            type="file"
+                                                                            id="attachment_1"
+                                                                            name="attachment_1"
+                                                                            class="attachment-input"
+                                                                            style="display: none;"
+                                                                            onchange="handleAttachmentChange(this)"
+                                                                        >
+                                                                    
+                                                                        <span id="file-name-1" class="file-name" style="margin-left: 10px; font-style: italic; color: #555;"></span>
+                                                                        <span id="file-status-1" class="file-status" style="margin-left: 5px;"></span>
+                                                                    </div>
+                                                                    <div class="form-group col-md-1" style="margin-top: -0.5%;">
+                                                                        <a class="btn remove-row"><i class="la la-trash-o light-blue-icon"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                            @else
+                                                                    <p>Fuel Card holders cannot claim mileage as per Company Policy!</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top: 10px;">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="btn btn-light btn-sm rounded" id="add-row-btn">Add</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-md-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
+@endsection
+
+<style>
+    .label-bar {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+    }
+    
+    .label-bar .label {
+        padding: 0 8px;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    .required {
+        color: red;
+        font-weight: bold;
+        margin-right: 4px;
+    }
+    
+    .custom-input, .select-custom {
+        height: 35px;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.2s ease;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .custom-input:hover, .select-custom:hover {
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    }
+    
+    .custom-button {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+        padding: 5px 10px;
+    }
+    
+    .light-blue-icon {
+        color: #03A2DD;
+    }
+    
+    .btn-light {
+        background-color: #d3d3d3;
+        border: none;
+    }
+    
+    .btn-light.btn-sm {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+    }
+    
+    .btn-light:hover {
+        background-color: #d4d4d4;
+    }
+    
+    .form-control, .custom-input {
+        height: 50%;
+    }
+    .custom-button {
+    background-color: #03A2DD; /* Button background color */
+    border: 2px solid #03A2DD; /* Border color matching the button */
+    border-radius: 8px; /* Adjust the border radius as needed */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding for better click area */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, border-color 0.3s; /* Transition effect */
+    }
+
+    .custom-button:hover {
+        background-color: white; /* Change background on hover */
+        color: #03A2DD; /* Change text color on hover */
+        border-color: #03A2DD; /* Maintain border color on hover */
+    }
+    .attachment-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .attachment-label {
+        color: #03A2DD;
+        font-size: 24px; /* Adjust size as needed */
+        cursor: pointer;
+    }
+
+    .attachment-label:hover {
+        color: #03A2DD;
+    }
+
+    .attachment-input {
+        display: none; /* Hide the file input */
+    }
+
+
+    </style>
+    
+@section('footer')
+    <script src="{{asset('app-assets/vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/js/scripts/forms/select/form-select2.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.date.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/pickadate/picker.time.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/pickadate/legacy.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/vendors/js/pickers/daterange/daterangepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/js/scripts/custom/daterangepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('assets/custom/date.js')}}" type="text/javascript"></script>
+    <script src="{{asset('assets/custom/air-date-picker/js/datepicker.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('assets/custom/air-date-picker/js/i18n/datepicker.en.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/js/scripts/modal/components-modal.js')}}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            $('.date-range-picker').daterangepicker({
+                timePicker: true,
+                timePicker24Hour: true,
+                timePickerSeconds: false,  // Set to true if you want seconds selection
+                locale: {
+                    format: 'YYYY-MM-DD HH:mm'  // Display format for date and time
+                },
+                autoUpdateInput: true,
+            });
+        });
+    </script>
+    <script>
+        function checkCategory(selectElement) {
+            const categoryName = selectElement.options[selectElement.selectedIndex].text.trim(); // Get the selected category name and trim whitespace
+            const rowIndex = selectElement.id.split('_')[1]; // Extract the index from the ID
+            const travelOrderRow = document.getElementById(`travel-order-row-${rowIndex}`);
+            
+            // Array of category names that should trigger the Travel Order dropdown
+            const travelOrderCategories = ['Local - DA (via Air)', 'Foreign - DA']; // Add "Foreign - DA" as needed
+            console.log(categoryName);
+            
+            if (travelOrderCategories.includes(categoryName)) { // Check if categoryName is in the allowed list
+                console.log("Allowed");
+                travelOrderRow.style.display = 'block'; // Show Travel Order dropdown
+            } else {
+                console.log("Not Allowed");
+                travelOrderRow.style.display = 'none'; // Hide Travel Order dropdown
+            }
+        }
+    </script>
+    
+    
+    <script>
+        let itemCount = 1;
+
+        document.getElementById('add-row-btn').addEventListener('click', function () {
+            itemCount++;
+            console.log(itemCount);
+            document.getElementById('itemCount').value = itemCount;
+            
+            const newRow = document.getElementById('template-row').cloneNode(true);
+            newRow.id = `row_${itemCount}`;
+        
+            newRow.querySelectorAll('input, select, label').forEach(input => {
+                if (input.name) {
+                    input.name = input.name.replace(/_\d+$/, `_${itemCount}`);
+                }
+                if (input.id) {
+                    input.id = input.id.replace(/_\d+$/, `_${itemCount}`);
+                }
+                if (input.tagName === "INPUT" && input.type !== 'file') {
+                    input.value = ''; 
+                }
+            });
+        
+            const newFileInput = newRow.querySelector('.attachment-input');
+            const newLabel = newRow.querySelector('.attachment-label');
+        
+            newLabel.setAttribute('for', `attachment_${itemCount}`);
+            newFileInput.setAttribute('id', `attachment_${itemCount}`);
+            newFileInput.setAttribute('name', `attachment_${itemCount}`);
+        
+            document.getElementById('form-rows').appendChild(newRow);
+        });
+        
+        // Remove row functionality
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('.form-row').remove();
+            }
+        });
+    </script>
+    <script>
+        var categoriesDetailCount = parseInt($('#categoriesDetailCount').val());
+        var itemCount = parseInt($('#itemCount').val());
+        var categoriesCount = parseInt($('#categoriesCount').val());
+        $('body').on('change','select.voucherCategory', function(evt){
+            var category = $(this).find(':selected').data('view');
+            var categoryContainer = $(this);
+            var categoryID = $(this).val();
+            evt.preventDefault();
+            categoriesDetailCount = categoriesDetailCount+1;
+            itemCount = itemCount+1;
+            $('#categoriesDetailCount').val(categoriesDetailCount);
+            var element_id = $(this).attr('id');
+            if($("[data-parent='" + element_id + "']").length){
+                alert('Details already exist against this selection. Please add more selection.');
+            }
+            else{
+                // console.log(category);
+                if($('#'+category).length){
+                    alert('Oh! This Category Already Exist.');
+                }
+                else{
+                    $.ajax({
+                        url: "{{ URL::to('voucher/category/form/display') }}/" + "misc" + "/parent/" + element_id + '/item/' + itemCount + '/id/' + categoryID,
+                        method:"GET",
+                        data:{
+                            type: "{!! $type !!}",
+                        },
+                        success:function (response){
+                            $("#rowContainer").append(JSON.parse(response).row);
+                            $("#itemCount").val(itemCount);
+                            categoryContainer.attr('disabled', true);
+
+                            if(category == 'hotel-stay-pakistan'){
+                                $('.datetimeHotelStay').daterangepicker({
+                                    timePicker: false,
+                                });
+                            }
+                            else if(category == 'out-of-lahore-meal' || category == 'out-of-office-meal'){
+                                $('.mealOutOfLahore').datepicker({
+                                    language: 'en',
+                                    multipleDates: true
+                                });
+                            }
+                            else{
+                                $('.datetime').daterangepicker({
+                                    timePicker: true,
+                                    timePicker24Hour: true,
+                                    timePickerIncrement: 1,
+                                    maxSpan:3,
+                                    locale: {
+                                        format: 'MM/DD/YYYY HH:mm'
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }).on('click', '#addVoucherItem', function(){
+            itemCount = itemCount+1;
+            var element_id = $(this).data('category');
+            var categoryID = $(this).data('category-id');
+            $.ajax({
+                url: "{{ URL::to('item/add') }}/" + itemCount + "/parent/" + element_id + '/id/' + categoryID,
+                method:"GET",
+                data:{
+                    type: "{!! $type !!}"
+                },
+                success:function (response){
+                    $("#"+element_id).closest('div').find('.card-body').append(JSON.parse(response).row);
+                    $("#itemCount").val(itemCount);
+                    if(element_id == 'hotel-stay-pakistan'){
+                        $('.datetime').daterangepicker({
+                            timePicker: false,
+                        });
+                    }
+                    else if(element_id == 'out-of-lahore-meal' || element_id == 'out-of-office-meal'){
+                        $('.mealOutOfLahore').datepicker({
+                            language: 'en',
+                            multipleDates: true
+                        });
+                    }
+                    else{
+                        $('.datetime').daterangepicker({
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            timePickerIncrement: 1,
+                            locale: {
+                                format: 'MM/DD/YYYY HH:mm'
+                            }
+                        });
+                    }
+                }
+            });
+        }).on('change', "input[name^='kms_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            if(category == 'Fuel - Mileage (within city)' || category == 'Fuel - Mileage (out of city)'){
+                var kms = $(this).val();
+                var from =  $(this).closest('div.form-row').find("input[name^='date_']").val();
+
+                var amount = 0;
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var mode_of_travel = $(this).closest('div.form-row').find("select[name^='mode_of_travel_']").val();
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                $.ajax({
+                    url: "{{URL::to('get/rate')}}/" + mode_of_travel + "/" + from,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        amount = kms*res[0].amount;
+                        amountContainer.val(amount.toFixed(0));
+                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                        console.log(totalAmount);
+                        totalAmountContainer.val(totalAmount.toFixed(0));
+                    }
+                });
+            }
+        }).on('change', "select[name^='mode_of_travel_']",function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Fuel - Mileage (within city)' || category == 'Fuel - Mileage (out of city)'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var kmsContainer = $(this).closest('div.form-row').find("input[name^='kms_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                kmsContainer.val(0);
+                amountContainer.val(0);
+                totalAmount = parseInt(totalAmount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+            }
+        }).on('change', "input[name^='rate_per_litre_']", function(){
+            var amountPaid = $(this).closest('div.form-row').find("input[name^='amount_paid_']").val();
+            var ratePerLitre = $(this).val();
+            var litres = amountPaid/ratePerLitre;
+            $(this).closest('div.form-row').find("input[name^='litres_']").val(litres.toFixed(2))
+        }).on('change', "input[name^='amount_paid_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Fuel - Receipts' || category == 'Local - Transport'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var amountPaidContainer = $(this).closest('div.form-row').find("input[name^='amount_paid_']");
+
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = amountPaidContainer.val();
+                amountContainer.val(parseInt(amount).toFixed(0));
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+
+                if(category == 'Fuel - Receipts'){
+                    var ratePerLitre = $(this).closest('div.form-row').find("input[name^='rate_per_litre_']").val();
+                    var amountPaid = $(this).val();
+                    if(ratePerLitre > 0){
+                        var litres = amountPaid/ratePerLitre;
+                        $(this).closest('div.form-row').find("input[name^='litres_']").val(litres)
+                    }
+                }
+            }
+            else if(category == 'Meal - Entertainment' || category == 'Local - Toll tax / Parking charges / E-Tag' || category == 'Misc' || category == 'Courier' || category == 'Employee Amenities-Guest house/Rest house' || category == 'Employee Amenities-Sales office' ||   category == 'Local - Toll tax / Parking charges / E-Tag (out of city)' || category == 'Mobile - Card / PTCL' || category == 'Medicals – Mother' || category == 'Motor Car income tax claim' || category == 'Vehicle Repair/Maintenance' || category == 'Other Amenities' || category == 'Material Sample' || category == 'Fee & Subscription'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var amountPaidContainer = $(this).closest('div.form-row').find("input[name^='amount_paid_']");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = amountPaidContainer.val();
+
+                amountContainer.val(parseInt(amount).toFixed(0));
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+            }
+
+            else if(category == 'Local - Hotel Stay'){
+                var amountToBePaidContainer = $(this).closest('div.form-row').find("input[name^='amount_to_be_paid_']");
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var amountPaidContainer = $(this);
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var diffDays = $(this).closest('div.form-row').find("input[name^='duration_']").val();
+                var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                var allowedAmount = 0;
+                            amountContainer.val(amount);
+                            amountToBePaidContainer.val(amount);
+                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                            totalAmountContainer.val(totalAmount);
+                            amountPaidContainer.val(amount);
+            }
+            else if(category == 'Mobile - Handset'){
+                var amountToBePaidContainer = $(this).closest('div.form-row').find("input[name^='amount_to_be_paid_']");
+                var amountPaidContainer = $(this);
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var date = $(this).closest('div.form-row').find("input[name^='date_']").val();
+                var from = $.format.date(new Date(), "yyyy-MM-dd");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                var allowedAmount = 0;
+                $.ajax({
+                    url: "{{URL::to('get/rate')}}/" + category + "/" + date,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        if(res[0].amount == -1){
+                            amountContainer.val(amount);
+                            amountToBePaidContainer.val(amount);
+                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                            totalAmountContainer.val(totalAmount);
+                            amountPaidContainer.val(amount);
+                        }
+                        else{
+                            allowedAmount = res[0].amount;
+                            if(allowedAmount <= amount){
+                                amountContainer.val(allowedAmount.toFixed(0));
+                                amountToBePaidContainer.val(allowedAmount.toFixed(0));
+                                totalAmount = parseInt(totalAmount)+ parseInt(allowedAmount);
+                                totalAmountContainer.val(totalAmount);
+                                amountPaidContainer.val(amount);
+                            }
+                            else{
+                                amountContainer.val(amount);
+                                amountToBePaidContainer.val(amount);
+                                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                totalAmountContainer.val(totalAmount);
+                                amountPaidContainer.val(amount);
+                            }
+                        }
+                    }
+                })
+            }
+        }).on('focusout', "input[name^='kms_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            console.log(category);
+            if(category == 'Local - DA'){
+                var kms = $(this).val();
+                if (kms != ''){
+                    var daDays = 0;
+                    var amount = 0;
+                    if(kms >= 100){
+                        var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                        var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                        var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                        var daFrom = tripDuration[0].trim();
+                        var daTo = tripDuration[1].trim();
+                        var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                        $.ajax({
+                            url: "{{URL::to('calculate/days')}}",
+                            method: "POST",
+                            data: {
+                                daFrom: daFrom,
+                                daTo: daTo
+                            },
+                            success: function(response){
+                                daDays = JSON.parse(response);
+                                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                                eligiblePeriodContainer.val(daDays);
+                                if(daDays >= 0){
+                                    $.ajax({
+                                        url:"{{URL::to('get/rate')}}/" + category + "/" + from,
+                                        success:function(response){
+                                            var res = JSON.parse(response);
+                                            amount = daDays*res[0].amount;
+                                            amountContainer.val(amount);
+                                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                            totalAmountContainer.val(totalAmount);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        alert('D.A not allowed. Minimum distance eligible for D.A is 100 Kms round trip');
+                        $(this).closest('div.form-row').find("input[name^='da_eligible_period_']").val('');
+                        $(this).closest('div.form-row').find("input[name^='amount_']").val('');
+                    }
+                }
+            }
+        }).on('focusout', "input[name^='date_range_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            if(category == 'Local - DA (via Air)') {
+                var daDays = 0;
+                var amount = 0;
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var daFrom = tripDuration[0].trim();
+                var daTo = tripDuration[1].trim();
+                var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                $.ajax({
+                    url: "{{URL::to('calculate/days')}}",
+                    method: "POST",
+                    data: {
+                        daFrom: daFrom,
+                        daTo: daTo
+                    },
+                    success: function (response) {
+                        daDays = JSON.parse(response);
+                        eligiblePeriodContainer.val(daDays);
+                        if(amountContainer.length > 0){
+                            console.log(amountContainer);
+                            var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                            if(daDays >= 0){
+                                $.ajax({
+                                    url:"{{URL::to('get/rate')}}/" + category + "/" + from,
+                                    success:function(response){
+                                        var res = JSON.parse(response);
+                                        amount = daDays*res[0].amount;
+                                        amountContainer.val(amount);
+                                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                        totalAmountContainer.val(totalAmount);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }).on('change', "select[name^=accomodation_food_], select[name^=currency_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Foreign - DA'){
+                var amount = 0;
+                var accomodation_food = $(this).val();
+                var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var currencyContainer = $(this).closest('div.form-row').find("select[name^='currency_']");
+                var forexAmountContainer = $(this).closest('div.form-row').find("select[name^='currency_']");
+                var localAmountContainer = $(this).closest('div.form-row').find("select[name^='local_amount_']");
+                if(accomodation_food){
+                    var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                    var personalDays = $(this).closest('div.form-row').find("input[name^='personal_days_']").val();
+                    var diffDays = 0;
+                    var daFrom = tripDuration[0].trim();
+                    var daTo = tripDuration[1].trim();
+                    var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                    $.ajax({
+                        url: "{{URL::to('calculate/days')}}",
+                        method: "POST",
+                        data: {
+                            daFrom: daFrom,
+                            daTo: daTo
+                        },
+                        success: function(response){
+                            console.log('Response: '+response);
+                            diffDays = JSON.parse(response);
+                            foreignRateCalculation();
+                        }
+                    });
+                    function foreignRateCalculation(){
+                        if (personalDays < diffDays){
+                            diffDays = diffDays - personalDays;
+                            if(accomodation_food == 'Own Accomodation'){
+                                eligiblePeriodContainer.val((diffDays).toFixed(1));
+                            }
+                            else if(accomodation_food == 'Accomodation by Host'){
+                                eligiblePeriodContainer.val((diffDays/2).toFixed(1));
+                            }
+                            else if(accomodation_food == 'Both Accomodation & Food by Host'){
+                                eligiblePeriodContainer.val((diffDays/3).toFixed(1));
+                            }
+                            var eligible_period = eligiblePeriodContainer.val();
+                            $.ajax({
+                                url: "{{URL::to('get/rate')}}/" + category + "/" + from,
+                                success:function(response){
+                                    var res = JSON.parse(response);
+                                    amount = eligible_period*res[0].amount;
+                                    amountContainer.val(amount);
+                                }
+                            })
+                        }
+                        else{
+                            alert('Personal days must be less than DA days');
+                            $(this).closest('div.form-row').find("input[name^='personal_days_']").val(0)
+                        }
+                    }
+                }
+                else{
+                    eligiblePeriodContainer.val(0);
+                    amountContainer.val(0);
+                }
+            }
+        }).on('change', "input[name^=date_range_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Local - Hotel Stay'){
+                var durationContainer = $(this).closest('div.form-row').find("input[name^='duration_']");
+
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var dateFrom = new Date((tripDuration[0]).trim());
+                var dateTo = new Date((tripDuration[1]).trim());
+                var timeDiff = Math.abs(dateTo.getTime() - dateFrom.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                diffDays = diffDays+1;
+                durationContainer.val(diffDays);
+            }
+        }).on('change', "input[name^=forex_amount_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Foreign - Expenses'){
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                amountContainer.val(amount);
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount);
+            }
+        }).on('change', "select[name^=description_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Meal - Out of office' || category == 'Meal - Out of Lahore Posting'){
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var meal_dates = $(this).closest('div.form-row').find("input[name^='meal_dates_']");
+                var description = $(this).closest('div.form-row').find("select[name^='description_']").val();
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amount = 0;
+                var mealDays = meal_dates.val().split(',');
+                mealDays = mealDays.length;
+                var from = $(this).closest('div.form-row').find("select[name^='date_']").val();
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                $.ajax({
+                    url: "{{URL::to('get/rate')}}/" + description + "/" + from,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        amount = res[0].amount*mealDays;
+                        amountContainer.val(amount);
+                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                        totalAmountContainer.val(totalAmount.toFixed(0));
+                    },
+                    error:function(response){
+                        console.log(response);
+                    }
+                });
+
+            }
+        }).on('change',"select[name^=travel_order_]",function(){
+            if($(this).val() != ""){
+                if ($(this).val() == $("select[name^=travel_order_]").not(this).val()) {
+                    alert('You have already selected this travel order for another line item.');
+                    $(this).val("");
+                }
+            }
+        }).on('click', '#removeCategory', function(){
+            if(confirm('Are you sure you want to remove this ?')){
+                var categoryContainer = $(this).closest('div.form-row');
+                var categoryItemsContainer = $(this).closest('div.form-row').find("select[name^='voucher_categories_'] option:selected");
+                $('#'+categoryItemsContainer.data('view')).remove();
+                categoryContainer.remove();
+            }
+
+        }).on('click', '#removeCategoryItem', function(){
+            if(confirm('Are you sure you want to remove this ?')){
+                var categoryItemContainer = $(this).closest('div.form-row');
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+
+                var totalAmount = totalAmountContainer.val() - amountContainer.val();
+                totalAmountContainer.val(totalAmount);
+                categoryItemContainer.remove();
+            }
+        }).on('change', '.datetimeOutOfLahore', function(){
+            var duration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+            var dateFrom = new Date((duration[0]).trim());
+            var dateTo = new Date((duration[1]).trim());
+
+            var timeDiff = Math.abs(dateTo.getTime() - dateFrom.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }).on('change', '.official_travel', function(){
+            if($(this).val() == 'Yes'){
+                if(confirm('Are you sure that you were on official travel other than Kasur')){
+                    $(this).val('Yes');
+                }
+                else{
+                    $(this).val('No');
+                }
+            }
+        }).on('change', '.country', function(){
+            if(confirm('Are you sure country is not available in list ?')){
+                var otherCountryContainer = $(this).closest('div.form-row').find("input[name^='country_']");
+                $(otherCountryContainer).attr('hidden', false);
+                $(otherCountryContainer).attr('disabled', false);
+                $(this).attr('hidden', true);
+                $(this).attr('disabled', true);
+            }
+        });
+    </script>
+    <script>
+        $('#chargeTo').on('change', function(){
+            if($(this).val() == 'Cost Center'){
+               $('#costCenter').removeAttr('hidden');
+               $('.costCenter').attr('required', true);
+               $('.costCenter').addClass('select2');
+               $('.select2').select2();
+               $('#orderNumber').attr('hidden', true);
+               $('#orderNumber').removeAttr('required');
+           }
+            else if($(this).val() == 'Order'){
+                $('.costCenter').removeAttr('required');
+                $('.costCenter').next('.select2-container').hide();
+                $('#costCenter').attr('hidden', true);
+                $('#orderNumber').removeAttr('hidden');
+                $('#orderNumber').attr('required', true);
+            }
+            else{
+                $('.costCenter').removeAttr('required');
+                $('.costCenter').next('.select2-container').hide();
+                $('#costCenter').attr('hidden', true);
+                $('#orderNumber').removeAttr('hidden');
+                $('#orderNumber').attr('hidden', true);
+            }
+        });
+        $('#addCategory').click(function(evt){
+            evt.preventDefault();
+            if($('#voucher_categories_'+categoriesCount).val() == ""){
+                alert('You cannot add more categories without completing the first category');
+            }
+            else{
+                categoriesCount = categoriesCount+1;
+                $('#categoriesCount').val(categoriesCount);
+                $.ajax({
+                    url: "{{ URL::to('voucher/category/add') }}/" + categoriesCount,
+                    data:{
+                        type: "{!! $type !!}",
+                    },
+                    success:function (response){
+                        $("#rowContainer").append(JSON.parse(response).row);
+                        $('.select2').select2({
+                            tags: true
+                        });
+                    }
+                });
+            }
+        });
+        function localRateCalculation(from){
+            $.ajax({
+                url: "{{URL::to('calculate/forex-to-local')}}" + "/" + from,
+                success:function(response){
+                    var ress = JSON.parse(response);
+                }
+            });
+
+        }
+    </script>
+    @if(isset($voucher))
+        <script>
+            $(document).ready(function(){
+                $('.card-content').addClass('show');
+                $('.select2').select2({
+                    tags: true
+                });
+            })
+        </script>
+    @endif
+    <script>
+        $('#voucher-form').on('keypress', function(e){
+            var key = e.charCode || e.keyCode || 0;
+            if(key==13){
+                e.preventDefault();
+            }
+        })
+    </script>
+    <script>
+    function handleAttachmentChange(input) {
+        const container = input.closest(".attachment-icon");
+        if (!container) return;
+        console.log(container);
+        const fileNameSpan = container.querySelector(".file-name");
+        const fileStatusSpan = container.querySelector(".file-status");
+    
+        if (input.files && input.files.length > 0) {
+            fileNameSpan.innerText = input.files[0].name;
+            fileStatusSpan.innerText = "✅";
+            fileStatusSpan.style.color = "green";
+        } else {
+            fileNameSpan.innerText = "No file selected";
+            fileStatusSpan.innerText = "";
+        }
+}
+</script>
+@endsection
+
+<style>
+    
+</style>

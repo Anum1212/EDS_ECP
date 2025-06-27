@@ -1,0 +1,542 @@
+<?php $__env->startSection('header'); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/vendors/css/forms/selects/select2.min.css')); ?>">
+    <style>
+        .content {
+            background-color: #414042; /* Grey background */
+        }
+
+        .header-image {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: url('<?php echo e(asset('assets/img/good-afternoon.jpeg')); ?>') no-repeat center center;
+            background-size: cover;
+        }
+
+        .header-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .quick-actions-heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: left;
+            color: white;
+        }
+
+        .action-tile {
+            width: 180px;  
+            height: 100px; 
+            text-align: center;
+            background-color: white;
+            color: #333;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        } 
+
+        .status-action-tile {
+            width: 180px;  
+            height: 100px; 
+            text-align: left;
+            background-color: white;
+            color: #333;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        } 
+
+        .quick-action-tile {
+            width: 180px;  
+            height: 100px; 
+            text-align: center;
+            background-color: #F2F2F2;
+            color: #333;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        }
+
+        .action-tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Icons */
+        .tile-icon {
+            font-size: 2.4rem !important;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .status-tile-icon {
+            font-size: 1.4rem !important;
+            /* margin-bottom: 10px; */
+            color: #2A6FB5 !important;
+        }
+
+        /* Tile Text */
+        .tile-text {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: black;
+        }
+
+        .quick-tile-text {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 0px;
+            color: black;
+        }
+
+        /* Container and Row */
+        .container {
+            text-align: left;
+        }
+
+        .row {
+            display: flex;
+            /* flex-wrap: wrap; */
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        /* .col-md-2 {
+            flex: 0 0 auto;
+            width: auto;
+            text-align: left;
+        } */
+
+        .no-auto-margin {
+            margin-left: 0 !important;
+        }
+
+        /* Progress Bar Styling */
+        .progress-bar {
+            width: 100% !important;
+            background-color: #f3f3f3 !important;
+            border-radius: 10px !important;
+            height: 10px !important;
+            margin-top: 23px !important;
+        }
+
+        .progress {
+            height: 10px !important;
+            border-radius: 10px !important;
+            background-color: lightblue !important;
+        }
+
+        .progress-tile {
+            width: 260px; 
+            height: 180px; 
+            min-width: 10px;
+        }
+
+        .status-action-tile {
+        width: 280px;  
+        height: 180px; 
+        text-align: left;
+        background-color: white;
+        color: #333;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        position: relative;
+    }
+
+    .status-tile-icon {
+        font-size: 36px; 
+        color: #4caf50;  
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .tile-title {
+        color: #556B82;
+        font-size: 18px; 
+        font-weight: bold;
+        margin-top: 10px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .tile-text {
+        font-size: 24px;
+        color: #333;
+        margin-top: 15px;
+        font-weight: 600;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        height: 15px; 
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .progress {
+        height: 100%;
+        border-radius: 10px;
+        background-color: #4caf50;
+        transition: width 0.6s ease; 
+    }
+
+    .progress-bar:hover .progress {
+        background-color: #388e3c; 
+    }
+
+    .status-action-tile {
+        width: 280px;
+        height: 180px;
+        text-align: left;
+        background-color: white;
+        color: #333;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        position: relative;
+    }
+
+    .status-tile-icon {
+        font-size: 36px;
+        color: #4caf50;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .tile-title {
+        color: #556B82;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .tile-text {
+        font-size: 32px; 
+        color: #4caf50; 
+        margin-top: 15px;
+        font-weight: 700;
+    }
+
+    .status-action-tile {
+        width: 280px;
+        height: 180px;
+        text-align: center; 
+        background-color: white;
+        color: #333;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        position: relative;
+    }
+
+    .status-tile-icon {
+        font-size: 36px;
+        color: #4caf50;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .tile-text {
+        font-size: 36px; 
+        color: #4caf50;  
+        font-weight: 700; 
+        margin-bottom: 5px;
+    }
+
+    .tile-title {
+        color: #556B82;
+        font-size: 18px; 
+        font-weight: bold;
+    }
+
+    .status-action-tile {
+        width: 280px;
+        height: 180px;
+        text-align: center; 
+        background-color: white;
+        color: #333;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        display: inline-block;
+        position: relative;
+    }
+
+    .status-tile-icon {
+        font-size: 30px;
+        color: #4caf50;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .tile-text {
+        font-size: 36px; 
+        color: #4caf50;  
+        font-weight: 700; 
+        margin-bottom: 5px;
+    }
+
+    .tile-title {
+        color: #556B82;
+        font-size: 14px; 
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 10px;
+        height: 15px;
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .progress {
+        height: 100%;
+        border-radius: 10px;
+        background-color: #4caf50;
+        transition: width 0.6s ease;
+    }
+
+    .progress-bar:hover .progress {
+        background-color: #388e3c;
+    }
+
+    .status-action-tile:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+    </style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('body'); ?>
+    <div class="header-image">
+        <div class="header-text" id="greeting"></div>
+    </div>
+    <br>
+    <div class="container no-auto-margin">
+        <!-- First Row: Create New Section -->
+        <h2 class="quick-actions-heading" style="margin-top:2%; margin-left: 2%">Quick Actions</h2>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="la la-file-text tile-icon"></i>
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('voucher/add')); ?>" style="color: black; font-size: 12px !important">New Claim</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="la la-medkit tile-icon"></i>
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('voucher/medicines-mother-claim')); ?>" style="color: black; font-size: 12px !important">Medicines Mother</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="fa fa-gas-pump tile-icon"></i> 
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('fuel-claim/add')); ?>" style="color: black; font-size: 12px !important">Fuel Reimbursement</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="fa fa-gas-pump tile-icon"></i> 
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('fuel-mileage/add')); ?>" style="color: black; font-size: 12px !important">Fuel Mileage</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="la la-plane tile-icon"></i> 
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('travel-claim/add')); ?>" style="color: black; font-size: 12px !important">New Travel Claim</a>
+                    </div>
+                </div>
+            </div>
+            
+            <?php if($employee->department->businessUnit->company->id != 1700 && $employee->department->businessUnit->company->id != 1000): ?>
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="fa fa-briefcase-medical tile-icon"></i> 
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('medical-claim/add')); ?>" style="color: black; font-size: 12px !important">Medical Claim</a>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <div class="col-md-2">
+                <div class="quick-action-tile">
+                    <i class="la la-plane tile-icon"></i>
+                    <div class="quick-tile-text">
+                        <a href="<?php echo e(URL::to('travel-order/add')); ?>" style="color: black; font-size: 12px !important">New Travel Order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="quick-actions-heading" style="margin-top:2%; margin-left: 2%">Reimbursement Status</h2>
+        <div class="row" style="flex-wrap: nowrap;">
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-check-circle status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->vouchers ? $employee->vouchers : 0); ?>">
+                            <?php echo e(count($employee->vouchers)); ?>
+
+                        </span>
+                    </div>
+            
+                    <a href="<?php echo e(URL::to('vouchers')); ?>">
+                        <span class="tile-title">Total Claims</span>
+                    </a>
+            
+                    <div class="progress-bar">
+                        <div class="progress" style="width: <?php echo e(count($employee->vouchers)==0?0:(count($employee->vouchers)/count($employee->vouchers))*(100).'%'); ?>;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-check-circle status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->approvedVouchers ? $employee->approvedVouchers : 0); ?>"><?php echo e(count($employee->approvedVouchers)); ?></span>
+                    </div>
+                    
+                    <a href="<?php echo e(URL::to('vouchers/approved')); ?>"><span class="tile-title">Approved Claims</span></a>
+            
+                    <div class="progress-bar" title="<?php echo e(count($employee->vouchers)==0?0:(count($employee->approvedVouchers)/count($employee->vouchers))*(100).'%'); ?>">
+                        <div class="progress" style="width: <?php echo e(count($employee->vouchers)==0?0:(count($employee->approvedVouchers)/count($employee->vouchers))*(100).'%'); ?>;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-times-circle status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->unapprovedVouchers ? $employee->unapprovedVouchers : 0); ?>"><?php echo e(count($employee->unapprovedVouchers)); ?></span>
+                    </div>
+                    
+                    <a href="<?php echo e(URL::to('vouchers/unapproved')); ?>"><span class="tile-title">Unapproved Claims</span></a>
+            
+                    <div class="progress-bar" title="<?php echo e(count($employee->vouchers)==0?0:(count($employee->vouchers)/count($employee->vouchers))*(100).'%'); ?>">
+                        <div class="progress" style="width: <?php echo e(count($employee->vouchers)==0?0:(count($employee->vouchers)/count($employee->vouchers))*(100).'%'); ?>;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-check-square status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->travelOrders ? $employee->travelOrders : 0); ?>"><?php echo e(count($employee->travelOrders)); ?></span>
+                    </div>
+                    
+                    <a href="<?php echo e(URL::to('travel-orders')); ?>"><span class="tile-title">Total Travel Orders</span></a>
+            
+                    <div class="progress-bar" title="<?php echo e(count($employee->travelOrders)==0?0:(count($employee->travelOrders)/count($employee->travelOrders))*(100).'%'); ?>">
+                        <div class="progress" style="width: <?php echo e(count($employee->travelOrders)==0?0:(count($employee->travelOrders)/count($employee->travelOrders))*(100).'%'); ?>;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-check-square status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->approvedTravelOrders ? $employee->approvedTravelOrders : 0); ?>"><?php echo e(count($employee->approvedTravelOrders)); ?></span>
+                    </div>
+                    
+                    <a href="<?php echo e(URL::to('travel-orders/approved')); ?>"><span class="tile-title">Approved Travel Orders</span></a>
+            
+                    <div class="progress-bar" title="<?php echo e(count($employee->travelOrders)==0?0:(count($employee->approvedTravelOrders)/count($employee->travelOrders))*(100).'%'); ?>">
+                        <div class="progress" style="width: <?php echo e(count($employee->travelOrders)==0?0:(count($employee->approvedTravelOrders)/count($employee->travelOrders))*(100).'%'); ?>;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="status-action-tile progress-tile">
+                    <i class="la la-exclamation-circle status-tile-icon"></i>
+            
+                    <div class="tile-text">
+                        <span id="approved-claims" class="counter" data-target="<?php echo e($employee->unapprovedTravelOrders ? $employee->unapprovedTravelOrders : 0); ?>"><?php echo e(count($employee->unapprovedTravelOrders)); ?></span>
+                    </div>
+                    
+                    <a href="<?php echo e(URL::to('travel-orders/unapproved')); ?>"><span class="tile-title">Unapproved Travel Orders</span></a>
+            
+                    <div class="progress-bar" title="<?php echo e(count($employee->travelOrders)==0?0:(count($employee->unapprovedTravelOrders)/count($employee->travelOrders))*(100).'%'); ?>%">
+                        <div class="progress" style="width: <?php echo e(count($employee->travelOrders)==0?0:(count($employee->unapprovedTravelOrders)/count($employee->travelOrders))*(100).'%'); ?>%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateGreeting() {
+            const hours = new Date().getHours();
+            const greetingText = document.getElementById('greeting');
+    
+            if (hours < 12) {
+                greetingText.textContent = 'Good morning!';
+            } else if (hours < 18) {
+                greetingText.textContent = 'Good afternoon!';
+            } else {
+                greetingText.textContent = 'Good evening!';
+            }
+        }
+    
+        updateGreeting();
+    </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.ers-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

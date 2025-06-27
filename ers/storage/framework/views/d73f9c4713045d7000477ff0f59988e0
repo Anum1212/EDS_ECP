@@ -1,0 +1,109 @@
+<?php $__env->startSection('header'); ?>
+<style>
+    body {
+        font-family: "72", Arial, Helvetica, sans-serif; /* Set the font-family for the body */
+    }
+    footer.footer-sf {
+        /* position: fixed; */
+        bottom: 0;
+        width: 100%;
+        padding: 10px 20px;
+        background-color: #414042 !important; /* Footer background with important */
+        color: lightgrey;
+        text-align: left;
+        font-size: 0.8rem; /* Small font size */
+        display: flex;
+        justify-content: space-between; /* Align the text on the left and image on the right */
+        align-items: center;
+    }
+    .footer-logo {
+        max-width: 250px; /* Adjust the size of the image */
+        height: auto;
+    }
+</style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('body'); ?>
+<div class="content-body" style="background-color: #414042; min-height: 100vh;"> <!-- Background color and full height -->
+    <section class="d-flex align-items-center justify-content-center min-vh-100"> <!-- Centering content -->
+        <div class="col-md-3 col-10 text-center"> <!-- Reduced the width to make the form smaller -->
+            <div class="p-4">
+                <!-- Logo -->
+                <img src="<?php echo e(asset('assets/img/logo.jpeg')); ?>" alt="Company Logo" class="img-fluid mb-3" style="max-width: 400px; height: auto;"> <!-- Adjusted logo size -->
+
+                <!-- Text Under Logo -->
+                <p class="text-white text-justify mb-4" style="font-size: 1.1rem;"> <!-- Justified text -->
+                    To log in to company <strong>packagesli</strong>, enter your user name and password below. 
+                    You can also log in to a different company.
+                </p>
+
+                <!-- Form for Login -->
+                <form action="<?php echo e(URL::to('sf-login')); ?>" method="post">
+                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                    <?php if(Session::has("error")): ?>
+                        <div class="alert alert-dismissible mb-2" role="alert" style="background-color: #fff3e0; color: #e65100; border-left: 4px solid #e65100; border-radius: 4px; padding: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); font-family: 'SAP 72', sans-serif;">
+                            <span class="alert-icon" style="color: #e65100; margin-right: 8px;"><i class="la la-exclamation-circle"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="background: none; border: none; color: #e65100;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Warning:</strong> <?php echo e(Session::get("error")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Session::has("success")): ?>
+                        <div class="alert alert-dismissible mb-2" role="alert" style="background-color: #e3f2fd; color: #0d47a1; border-left: 4px solid #0d47a1; border-radius: 4px; padding: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); font-family: 'SAP 72', sans-serif;">
+                            <span class="alert-icon" style="color: #0d47a1; margin-right: 8px;"><i class="la la-check-circle"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="background: none; border: none; color: #0d47a1;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Success:</strong> <?php echo e(Session::get("success")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <!-- Username Field -->
+                    <fieldset class="form-group floating-label-form-group mb-3 text-left">
+                        <label for="username" style="color: #717E8B;">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Username" value="<?php echo e(old('username')); ?>"
+                               style="background-color: black; color: white;">
+                    </fieldset>
+                
+                    <!-- Password Field -->
+                    <fieldset class="form-group floating-label-form-group mb-3 text-left">
+                        <label for="password" style="color: #717E8B;">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password"
+                               style="background-color: black; color: white;">
+                    </fieldset>
+                
+                    <!-- Forgot Password Link -->
+                    <div class="mb-3 text-right">
+                        <a href="<?php echo e(URL::to('#')); ?>" class="text-white"><i class="la la-key"></i> Forgot Password?</a>
+                    </div>
+                
+                    <!-- Login Button -->
+                    <button type="submit" class="btn btn-block" style="background-color: #0789FA; color: black; border-radius: 25px;">
+                        <i class="ft-unlock"></i> Login
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer-sf">
+    <span>
+        Copyright © 2024 SAP SuccessFactors, Inc. All rights reserved. These online services are SuccessFactors confidential and proprietary and for use by authorized SuccessFactors customers only. 
+        <a href="#" class="text-muted" style="color: lightgrey; text-decoration: underline;">Show version information</a>
+    </span>
+
+    <!-- Footer Image (Aligned Right) -->
+    <img src="<?php echo e(asset('assets/img/sf-logo.png')); ?>" alt="Footer Image" class="footer-logo"> <!-- Add your image source here -->
+</footer>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.login-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

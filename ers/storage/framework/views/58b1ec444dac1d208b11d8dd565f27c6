@@ -1,0 +1,22 @@
+<?php /**/ $divisions = \App\Business_Unit::with('company')->get(); /**/ ?>
+<div class="form-group col-md-12 mb-2">
+    <label>Select Divisions</label>
+    <select class="form-control select2" name="divisions[]" data-placeholder="Select" multiple>
+        <?php if(count($divisionFilters) > 0): ?>
+            <?php foreach($divisions as $division): ?>
+                <option
+                    <?php foreach($divisionFilters as $filter): ?>
+                    <?php echo e($filter == $division->id ? 'selected':""); ?>
+
+                    <?php endforeach; ?>
+                    value="<?php echo e($division->id); ?>"><?php echo e($division->bu_name.' / '.$division->company->company_name); ?></option>
+                </option>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <option></option>
+            <?php foreach($divisions as $division): ?>
+                <option value="<?php echo e($division->id); ?>"><?php echo e($division->bu_name.' / '.$division->company->company_name); ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+</div>

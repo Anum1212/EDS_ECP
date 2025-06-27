@@ -1,0 +1,84 @@
+<?php $__env->startSection('header'); ?>
+	<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <div class="content-body">
+        <section class="flexbox-container">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="col-md-4 col-10 box-shadow-2 p-0">
+                    <?php if(count($errors) > 0): ?>
+                        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Oh !</strong> Please fix the following issues to continue
+                            <ul class="error">
+                                <?php foreach($errors->all() as $error): ?>
+                                    <li style="list-style: circle"><?php echo e($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Session::has("error")): ?>
+                        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Oh !</strong> <?php echo e(Session::get("error")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Session::has("success")): ?>
+                        <div class="alert bg-success alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+                            <span class="alert-icon"><i class="la la-thumbs-o-up"></i></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Yeah !</strong> <?php echo e(Session::get("success")); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <div class="card border-grey border-lighten-3 m-0">
+                        <div class="card-header border-0">
+                            <div class="card-title text-center">
+                                <div class="p-1">
+                                    <img src="<?php echo e(asset('assets/img/logo-packages.png')); ?>" alt="Employee Reimbursement System">
+                                    <h3 class="mt-1">Employee Reimbursement System</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2">
+                                <span>Account Details</span>
+                            </p>
+                            <div class="card-body pt-0">
+                                <form class="form-horizontal" action="<?php echo e(URL::to('login')); ?>" method="post">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <fieldset class="form-group floating-label-form-group">
+                                        <label for="user-name">Your Employee ID</label>
+                                        <input type="text" class="form-control" id="username" name="username" value="<?php echo e(Input::old('username')); ?>" placeholder="Your Employee ID">
+                                    </fieldset>
+                                    <fieldset class="form-group floating-label-form-group mb-1">
+                                        <label for="user-password">Enter Password</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+                                    </fieldset>
+                                    <button type="submit" class="btn btn-outline-info btn-block"><i class="ft-unlock"></i> Login</button>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center pt-1">
+                                            <a href="<?php echo e(URL::to('forget/password')); ?>"><i class="la la-key"></i> Forget Password ?</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+
+	<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.login-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

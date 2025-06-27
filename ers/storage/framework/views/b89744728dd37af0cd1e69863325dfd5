@@ -1,0 +1,161 @@
+<?php /**/ $businessUnits = \App\Business_Unit::all(); /**/ ?>
+<?php /**/ $departments = \App\Department::all(); /**/ ?>
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="<?php echo e(URL::to('employee/add')); ?>" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Personal Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="bu-form">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>ID</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('id')); ?>" name="id" required>
+                                    </div>
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('name')); ?>" name="name" required>
+                                    </div>
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Email</label>
+                                        <input type="email" class="form-control" value="<?php echo e(Input::old('email')); ?>" name="email">
+                                    </div>
+                                    <div class="fo-rm-group col-md-4 mb-2">
+                                        <label>Nick Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('nick_name')); ?>" name="nick_name">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Mobile</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('mobile')); ?>" name="mobile">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Date of Birth</label>
+                                        <input type="date" class="form-control" value="<?php echo e(Input::old('date_of_birth')); ?>" name="date_of_birth" required>
+                                    </div>
+                                    <div class="form-group col-md-8 mb-2">
+                                        <label>Address</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('address')); ?>" name="address">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>City</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('city')); ?>" name="city">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>CNIC</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('cnic')); ?>" name="cnic">
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Marital Status</label>
+                                        <select class="select2 form-control" name="marital_status" required>
+                                            <option value="Single" <?php echo e(Input::old('marital_status') == 'S'?"selected":""); ?>>Single</option>
+                                            <option value="Married" <?php echo e(Input::old('marital_status') == 'M'?"selected":""); ?>>Married</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Vehicle Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="vehicleContainer">
+
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-info btn-sm white" id="addVehicle"><i class="la la-plus-circle"></i> Add More Vehicle </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater">Employment Information</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                            <div class="heading-elements">
+                                <ul class="list-inline mb-0">
+                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row" id="bu-form">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Select Department <br><small>(Company Name - Business Unit - Department) / Cost Center</small></label>
+                                        <select class="select2 form-control" name="department" required>
+                                            <?php foreach($departments as $department): ?>
+                                                <option <?php echo e(Input::old('department') == $department->id ? 'selected="Selected"':""); ?> value="<?php echo e($department->id); ?>"><?php echo e($department->businessUnit->company->company_name.' - '.$department->businessUnit->bu_name.' - '.$department->department_name .' / '.$department->cost_center); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Designation</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('designation')); ?>" name="designation" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Grade</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('grade')); ?>" name="grade" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Date of Joining</label>
+                                        <input type="date" class="form-control" value="<?php echo e(Input::old('date_of_joining')); ?>" name="date_of_joining" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>User Name</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('user_name')); ?>" name="user_name" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Password</label>
+                                        <input type="password" class="form-control" value="<?php echo e(Input::old('password')); ?>" name="password" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Level</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('level')); ?>" name="level" required>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Custom View</label>
+                                        <input type="text" class="form-control" value="<?php echo e(Input::old('custom_view')); ?>" name="custom_view">
+                                    </div>
+                                    <div class="form-group col-md-12 mb-2">
+                                        <label>Approver of</label>
+                                        <select class="select2 form-control" name="approver_of[]" multiple>
+                                            <?php foreach($businessUnits as $businessUnit): ?>
+                                                <option value="<?php echo e($businessUnit->id); ?>"><?php echo e($businessUnit->company->company_name.' - '.$businessUnit->bu_name); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer" id="bu-form-footer">
+                                <button class="btn btn-success btn-sm" type="submit"><i class="la la-paper-plane-o"></i> Submit </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

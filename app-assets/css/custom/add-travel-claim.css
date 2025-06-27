@@ -1,0 +1,114 @@
+.label-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.label-bar .label {
+    padding: 0 8px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.custom-input,
+.select-custom {
+    height: 35px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.2s ease;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.custom-input:hover,
+.select-custom:hover {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.custom-button {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    padding: 5px 10px;
+}
+
+.light-blue-icon {
+    color: #03A2DD;
+}
+
+.btn-light {
+    background-color: #d3d3d3;
+    border: none;
+}
+
+.btn-light.btn-sm {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+.btn-light:hover {
+    background-color: #d4d4d4;
+}
+
+.form-control,
+.custom-input {
+    height: 50%;
+}
+
+.custom-button {
+    background-color: #03A2DD;
+    /* Button background color */
+    border: 2px solid #03A2DD;
+    /* Border color matching the button */
+    border-radius: 8px;
+    /* Adjust the border radius as needed */
+    color: white;
+    /* Text color */
+    padding: 10px 20px;
+    /* Padding for better click area */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s, border-color 0.3s;
+    /* Transition effect */
+}
+
+.custom-button:hover {
+    background-color: white;
+    /* Change background on hover */
+    color: #03A2DD;
+    /* Change text color on hover */
+    border-color: #03A2DD;
+    /* Maintain border color on hover */
+}
+
+.attachment-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.attachment-label {
+    color: #03A2DD;
+    font-size: 24px;
+    /* Adjust size as needed */
+    cursor: pointer;
+}
+
+.attachment-label:hover {
+    color: #03A2DD;
+}
+
+.attachment-input {
+    display: none;
+    /* Hide the file input */
+}

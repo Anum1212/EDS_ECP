@@ -1,0 +1,941 @@
+<?php $__env->startSection('header'); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/vendors/css/forms/selects/select2.min.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/vendors/css/pickers/daterange/daterangepicker.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/css/plugins/pickers/daterange/daterange.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/css/custom/daterangepicker.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('assets/custom/air-date-picker/css/datepicker.min.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/css/plugins/animate/animate.css')); ?>">
+    <style>
+        .content {
+            background-color: #414042; /* Grey background */
+        }
+        input[type='number'] {
+            -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+    </style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('body'); ?>
+<div class="content-header row"> 
+    <div class="content-header-left col-md-6 col-10 mb-2" style="color: white">
+        <h3 class="content-header-title" style="color: white"><?php echo e($panelHeading); ?></h3>
+        <p>Here you can view your profile information</p>
+    </div>
+</div>
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="<?php echo e(URL::to($storingURL)); ?>" method="post" id="voucher-form">
+            <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+            <input type="hidden" name="itemCount" id="itemCount" value="<?php echo e(isset($voucher) ? $itemCount : 1); ?>">
+            <input type="hidden" name="claimType" id="claimType" value="Medical">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="file-repeater" style="font-weight: bold;">Your Profile</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Profile details -->
+                                    <div class="col-md-7">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-right"><strong>Employee ID: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->employee_number); ?></td>
+                                                    <td class="text-right"><strong>Name: </strong></td>
+                                                    <td><?php echo e($employee->employee_name); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Grade: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->grade); ?></td>
+                                                    <td class="text-right"><strong>Designation: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->designation); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Business Unit: </strong></td>
+                                                    <td><?php echo e($employee->department->BusinessUnit->bu_name); ?></td>
+                                                    <td class="text-right"><strong>Department: </strong></td>
+                                                    <td><?php echo e($employee->department->department_name); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Company: </strong></td>
+                                                    <td><?php echo e($employee->department->BusinessUnit->company->company_name); ?></td>
+                                                    <td class="text-right"><strong>Cost Center: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->cost_center); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Bank: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->bank); ?></td>
+                                                    <td class="text-right"><strong>Account Number: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->account_number); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Line Manager: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->line_manager->employee->employee_name); ?></td>
+                                                    <td class="text-right"><strong>Cost Center Approver: </strong></td>
+                                                    <td><?php echo e($employee_sf_data->BusinessUnit->bu_head->employee->employee_name); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Total OPD Limit: </strong></td>
+                                                    <td><?php echo e(number_format($entitlements->total_limit)); ?> PKR</td>
+                                                    <td class="text-right"><strong>Consumed OPD Limit </strong></td>
+                                                    <td><?php echo e(number_format($entitlements->consumed_limit)); ?> PKR</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right"><strong>Remaining OPD Limit </strong></td>
+                                                    <td><?php echo e(number_format($entitlements->total_limit - $entitlements->consumed_limit)); ?> PKR</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- User image on the right -->
+                                    <div class="col-md-4 text-center">
+                                        <img src="<?php echo e(asset('assets/img/user-placeholder-removebg.png')); ?>" alt="Profile Image" class="img-fluid rounded-circle" style="width: 250px; height: 250px;">
+                                        <p class="mt-2"><strong><?php echo e($employee->employee_name); ?></strong></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Enter Details Section -->
+                                <div class="col-md-12">
+                                    <hr>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title" id="file-repeater" style="font-weight: bold;">Enter Details</h4>
+                                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                                            <div class="heading-elements">
+                                                <ul class="list-inline mb-0">
+                                                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div id="rowContainer">
+                                                    <?php /* Fetch categories based on the company */ ?>
+                                                    <?php /**/ $categories = \App\Category::where('company_id', $employee->department->businessUnit->company->id)->where('category_name', 'LIKE', 'Medical%')->get(); /**/ ?>
+                                                    <?php /* <?php echo e($categories); ?> */ ?>
+                                                    <div id="category-form">
+                                                        <!-- Label bar (only appears once, not cloned) -->
+                                                        <div class="label-bar col-md-12">
+                                                            <div class="col-md-2 label">Category<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Date<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Medical Claim Type<span class="required">*</span></div>
+                                                            <div class="col-md-1 label">Receipt #<span class="required">*</span></div>
+                                                            <div class="col-md-2 label">Description<span class="required">*</span></div>
+                                                            <div class="col-md-1 label">Amount Paid<span class="required">*</span></div>
+                                                            <div class="col-md-1 label">Receipt Provided<span class="required">*</span></div>
+                                                        </div>
+
+                                                        <div id="form-rows">
+                                                            <?php if(isset($voucher)): ?>
+                                                                <?php foreach($voucher->categoryItems($voucher->id) as $item): ?>
+                                                                    <?php /**/ $itemCount++ /**/ ?>
+                                                                    <div class="form-row">
+                                                                        <div class="form-group col-md-2">
+                                                                            <select name="category_<?php echo e($itemCount); ?>" id="category_<?php echo e($itemCount); ?>" class="form-control custom-input" style="height: 50%;">
+                                                                                <option value="" disabled selected>Select Category</option>
+                                                                                <?php foreach($categories as $category): ?>
+                                                                                    <?php if($category->enabled): ?>
+                                                                                        <option value="<?php echo e($category->id); ?>"><?php echo e($category->category_name); ?></option>
+                                                                                    <?php endif; ?>
+                                                                                <?php endforeach; ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <input type="date" class="form-control custom-input" name="date_<?php echo e($itemCount); ?>" id="date_<?php echo e($itemCount); ?>" min="<?php echo e(date('Y-m-d', strtotime(date('Y-m-d').' - 3 months'))); ?>" value="<?php echo e(date('Y-m-d', strtotime($item->date_from))); ?>" required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <select class="form-control select-custom" name="medical_claim_type_<?php echo e($itemCount); ?>" required style="height: 50%;">
+                                                                                <option <?php echo e($item->medical_claim_type == "Self" ? 'selected' : ''); ?> value="Self">Self</option>
+                                                                                <option <?php echo e($item->medical_claim_type == "Spouse" ? 'selected' : ''); ?> value="Spouse">Spouse</option>
+                                                                                <option <?php echo e($item->medical_claim_type == "Child" ? 'selected' : ''); ?> value="Child">Child</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="recipt_number_<?php echo e($itemCount); ?>" id="recipt_number_<?php echo e($itemCount); ?>" required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-2 mb-2">
+                                                                            <input type="text" class="form-control custom-input" name="description_<?php echo e($itemCount); ?>" id="description_<?php echo e($itemCount); ?>" value="<?php echo e($item->description); ?>" required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <input type="text" class="form-control custom-input" value="<?php echo e($item->amount_paid); ?>" name="amount_<?php echo e($itemCount); ?>" id="amount_<?php echo e($itemCount); ?>" required>
+                                                                        </div>
+                                                                        <div class="form-group col-md-1 mb-2">
+                                                                            <select class="form-control select-custom" name="receipt_provided_<?php echo e($itemCount); ?>" required style="height: 50%;">
+                                                                                <option <?php echo e($item->receipt_copy == 1 ? 'selected' : ''); ?> value="1">Yes</option>
+                                                                                <option <?php echo e($item->receipt_copy == 0 ? 'selected' : ''); ?> value="0">No</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group col-md-1" style="margin-top: 2rem">
+                                                                            <a class="btn custom-button remove-row"><i class="la la-trash-o light-blue-icon"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php endforeach; ?>
+                                                                <?php /**/ View::share('itemCount', $itemCount) /**/ ?>
+                                                            <?php else: ?>
+                                                                <div class="form-row" id="template-row">
+                                                                    <div class="form-group col-md-2">
+                                                                        <select name="category_1" id="category_1" class="form-control custom-input" style="height: 50%;">
+                                                                            <option value="" disabled selected>Select Category</option>
+                                                                            <?php foreach($categories as $category): ?>
+                                                                                <?php if($category->enabled): ?>
+                                                                                    <option value="<?php echo e($category->id); ?>"><?php echo e($category->category_name); ?></option>
+                                                                                <?php endif; ?>
+                                                                            <?php endforeach; ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-2 mb-2">
+                                                                        <input type="date" class="form-control custom-input" name="date_1" id="date_1" required>
+                                                                    </div>
+                                                                    <div class="form-group col-md-2 mb-2">
+                                                                        <select class="form-control select-custom" name="medical_claim_type_1" required style="height: 50%;">
+                                                                            <option value="Self">Self</option>
+                                                                            <option value="Spouse">Spouse</option>
+                                                                            <option value="Child">Child</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-1 mb-2">
+                                                                        <input type="text" class="form-control custom-input" name="recipt_number_1" id="recipt_number_1" required>
+                                                                    </div>
+                                                                    <div class="form-group col-md-2 mb-2">
+                                                                        <input type="text" class="form-control custom-input" name="description_1" id="description_1" required>
+                                                                    </div>
+                                                                    <div class="form-group col-md-1 mb-2">
+                                                                        <input type="text" class="form-control custom-input" name="amount_1" id="amount_1" required>
+                                                                    </div>
+                                                                    <div class="form-group col-md-1 mb-2">
+                                                                        <select class="form-control select-custom" name="receipt_provided_1" required style="height: 50%;">
+                                                                            <option value="1">Yes</option>
+                                                                            <option value="0">No</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group col-md-1">
+                                                                        <a class="btn remove-row"><i class="la la-trash-o light-blue-icon"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top: 10px;">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="btn btn-light btn-sm rounded" id="add-row-btn">Add</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Button to Submit Form -->
+                                    <div class="form-group col-md-12 mt-3">
+                                        <button type="submit" class="btn custom-button">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
+<?php $__env->stopSection(); ?>
+
+<style>
+    .label-bar {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+    }
+    
+    .label-bar .label {
+        padding: 0 8px;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    .required {
+        color: red;
+        font-weight: bold;
+        margin-right: 4px;
+    }
+    
+    .custom-input, .select-custom {
+        height: 35px;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.2s ease;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .custom-input:hover, .select-custom:hover {
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    }
+    
+    .custom-button {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+        padding: 5px 10px;
+    }
+    
+    .light-blue-icon {
+        color: #03A2DD;
+    }
+    
+    .btn-light {
+        background-color: #d3d3d3;
+        border: none;
+    }
+    
+    .btn-light.btn-sm {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+    }
+    
+    .btn-light:hover {
+        background-color: #d4d4d4;
+    }
+    
+    .form-control, .custom-input {
+        height: 35%;
+    }
+    .custom-button {
+    background-color: #03A2DD; /* Button background color */
+    border: 2px solid #03A2DD; /* Border color matching the button */
+    border-radius: 8px; /* Adjust the border radius as needed */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding for better click area */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, border-color 0.3s; /* Transition effect */
+    }
+
+    .custom-button:hover {
+        background-color: white; /* Change background on hover */
+        color: #03A2DD; /* Change text color on hover */
+        border-color: #03A2DD; /* Maintain border color on hover */
+    }
+
+
+
+    </style>
+    
+<?php $__env->startSection('footer'); ?>
+    <script src="<?php echo e(asset('app-assets/vendors/js/forms/select/select2.full.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/forms/select/form-select2.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/pickadate/picker.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/pickadate/picker.date.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/pickadate/picker.time.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/pickadate/legacy.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/daterange/daterangepicker.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/custom/daterangepicker.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('assets/custom/date.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('assets/custom/air-date-picker/js/datepicker.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('assets/custom/air-date-picker/js/i18n/datepicker.en.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/modal/components-modal.js')); ?>" type="text/javascript"></script>
+    <script>
+        let itemCount = 1;
+    
+        document.getElementById('add-row-btn').addEventListener('click', function() {
+            itemCount++;
+            // Function to update the item count
+            function updateItemCount() {
+                document.getElementById('itemCount').value = itemCount; // Update the hidden input
+            }
+            const newRow = document.getElementById('template-row').cloneNode(true);
+            newRow.querySelectorAll('input, select').forEach(input => {
+                if (input.name) {
+                    input.name = input.name.replace(/_\d+$/, '_' + itemCount);
+                    input.value = ''; // Clear the value for new row
+                }
+            });
+            document.getElementById('form-rows').appendChild(newRow);
+            updateItemCount();
+        });
+    
+        // Remove row functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('.form-row').remove();
+            }
+        });
+    </script>
+    <script>
+        var categoriesDetailCount = parseInt($('#categoriesDetailCount').val());
+        var itemCount = parseInt($('#itemCount').val());
+        var categoriesCount = parseInt($('#categoriesCount').val());
+        $('body').on('change','select.voucherCategory', function(evt){
+            var category = $(this).find(':selected').data('view');
+            var categoryContainer = $(this);
+            var categoryID = $(this).val();
+            evt.preventDefault();
+            categoriesDetailCount = categoriesDetailCount+1;
+            itemCount = itemCount+1;
+            $('#categoriesDetailCount').val(categoriesDetailCount);
+            var element_id = $(this).attr('id');
+            if($("[data-parent='" + element_id + "']").length){
+                alert('Details already exist against this selection. Please add more selection.');
+            }
+            else{
+                // console.log(category);
+                if($('#'+category).length){
+                    alert('Oh! This Category Already Exist.');
+                }
+                else{
+                    $.ajax({
+                        url: "<?php echo e(URL::to('voucher/category/form/display')); ?>/" + "misc" + "/parent/" + element_id + '/item/' + itemCount + '/id/' + categoryID,
+                        method:"GET",
+                        data:{
+                            type: "<?php echo $type; ?>",
+                        },
+                        success:function (response){
+                            $("#rowContainer").append(JSON.parse(response).row);
+                            $("#itemCount").val(itemCount);
+                            categoryContainer.attr('disabled', true);
+
+                            if(category == 'hotel-stay-pakistan'){
+                                $('.datetimeHotelStay').daterangepicker({
+                                    timePicker: false,
+                                });
+                            }
+                            else if(category == 'out-of-lahore-meal' || category == 'out-of-office-meal'){
+                                $('.mealOutOfLahore').datepicker({
+                                    language: 'en',
+                                    multipleDates: true
+                                });
+                            }
+                            else{
+                                $('.datetime').daterangepicker({
+                                    timePicker: true,
+                                    timePicker24Hour: true,
+                                    timePickerIncrement: 1,
+                                    maxSpan:3,
+                                    locale: {
+                                        format: 'MM/DD/YYYY HH:mm'
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }).on('click', '#addVoucherItem', function(){
+            itemCount = itemCount+1;
+            var element_id = $(this).data('category');
+            var categoryID = $(this).data('category-id');
+            $.ajax({
+                url: "<?php echo e(URL::to('item/add')); ?>/" + itemCount + "/parent/" + element_id + '/id/' + categoryID,
+                method:"GET",
+                data:{
+                    type: "<?php echo $type; ?>"
+                },
+                success:function (response){
+                    $("#"+element_id).closest('div').find('.card-body').append(JSON.parse(response).row);
+                    $("#itemCount").val(itemCount);
+                    if(element_id == 'hotel-stay-pakistan'){
+                        $('.datetime').daterangepicker({
+                            timePicker: false,
+                        });
+                    }
+                    else if(element_id == 'out-of-lahore-meal' || element_id == 'out-of-office-meal'){
+                        $('.mealOutOfLahore').datepicker({
+                            language: 'en',
+                            multipleDates: true
+                        });
+                    }
+                    else{
+                        $('.datetime').daterangepicker({
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            timePickerIncrement: 1,
+                            locale: {
+                                format: 'MM/DD/YYYY HH:mm'
+                            }
+                        });
+                    }
+                }
+            });
+        }).on('change', "input[name^='kms_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            if(category == 'Fuel - Mileage (within city)' || category == 'Fuel - Mileage (out of city)'){
+                var kms = $(this).val();
+                var from =  $(this).closest('div.form-row').find("input[name^='date_']").val();
+
+                var amount = 0;
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var mode_of_travel = $(this).closest('div.form-row').find("select[name^='mode_of_travel_']").val();
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                $.ajax({
+                    url: "<?php echo e(URL::to('get/rate')); ?>/" + mode_of_travel + "/" + from,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        amount = kms*res[0].amount;
+                        amountContainer.val(amount.toFixed(0));
+                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                        console.log(totalAmount);
+                        totalAmountContainer.val(totalAmount.toFixed(0));
+                    }
+                });
+            }
+        }).on('change', "select[name^='mode_of_travel_']",function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Fuel - Mileage (within city)' || category == 'Fuel - Mileage (out of city)'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var kmsContainer = $(this).closest('div.form-row').find("input[name^='kms_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                kmsContainer.val(0);
+                amountContainer.val(0);
+                totalAmount = parseInt(totalAmount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+            }
+        }).on('change', "input[name^='rate_per_litre_']", function(){
+            var amountPaid = $(this).closest('div.form-row').find("input[name^='amount_paid_']").val();
+            var ratePerLitre = $(this).val();
+            var litres = amountPaid/ratePerLitre;
+            $(this).closest('div.form-row').find("input[name^='litres_']").val(litres.toFixed(2))
+        }).on('change', "input[name^='amount_paid_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Fuel - Receipts' || category == 'Local - Transport'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var amountPaidContainer = $(this).closest('div.form-row').find("input[name^='amount_paid_']");
+
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = amountPaidContainer.val();
+                amountContainer.val(parseInt(amount).toFixed(0));
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+
+                if(category == 'Fuel - Receipts'){
+                    var ratePerLitre = $(this).closest('div.form-row').find("input[name^='rate_per_litre_']").val();
+                    var amountPaid = $(this).val();
+                    if(ratePerLitre > 0){
+                        var litres = amountPaid/ratePerLitre;
+                        $(this).closest('div.form-row').find("input[name^='litres_']").val(litres)
+                    }
+                }
+            }
+            else if(category == 'Meal - Entertainment' || category == 'Local - Toll tax / Parking charges / E-Tag' || category == 'Misc' || category == 'Courier' || category == 'Employee Amenities-Guest house/Rest house' || category == 'Employee Amenities-Sales office' ||   category == 'Local - Toll tax / Parking charges / E-Tag (out of city)' || category == 'Mobile - Card / PTCL' || category == 'Medicals – Mother' || category == 'Motor Car income tax claim' || category == 'Vehicle Repair/Maintenance' || category == 'Other Amenities' || category == 'Material Sample' || category == 'Fee & Subscription'){
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var amountPaidContainer = $(this).closest('div.form-row').find("input[name^='amount_paid_']");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = amountPaidContainer.val();
+
+                amountContainer.val(parseInt(amount).toFixed(0));
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount.toFixed(0));
+            }
+
+            else if(category == 'Local - Hotel Stay'){
+                var amountToBePaidContainer = $(this).closest('div.form-row').find("input[name^='amount_to_be_paid_']");
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var amountPaidContainer = $(this);
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var diffDays = $(this).closest('div.form-row').find("input[name^='duration_']").val();
+                var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                var allowedAmount = 0;
+                            amountContainer.val(amount);
+                            amountToBePaidContainer.val(amount);
+                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                            totalAmountContainer.val(totalAmount);
+                            amountPaidContainer.val(amount);
+            }
+            else if(category == 'Mobile - Handset'){
+                var amountToBePaidContainer = $(this).closest('div.form-row').find("input[name^='amount_to_be_paid_']");
+                var amountPaidContainer = $(this);
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var date = $(this).closest('div.form-row').find("input[name^='date_']").val();
+                var from = $.format.date(new Date(), "yyyy-MM-dd");
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                var allowedAmount = 0;
+                $.ajax({
+                    url: "<?php echo e(URL::to('get/rate')); ?>/" + category + "/" + date,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        if(res[0].amount == -1){
+                            amountContainer.val(amount);
+                            amountToBePaidContainer.val(amount);
+                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                            totalAmountContainer.val(totalAmount);
+                            amountPaidContainer.val(amount);
+                        }
+                        else{
+                            allowedAmount = res[0].amount;
+                            if(allowedAmount <= amount){
+                                amountContainer.val(allowedAmount.toFixed(0));
+                                amountToBePaidContainer.val(allowedAmount.toFixed(0));
+                                totalAmount = parseInt(totalAmount)+ parseInt(allowedAmount);
+                                totalAmountContainer.val(totalAmount);
+                                amountPaidContainer.val(amount);
+                            }
+                            else{
+                                amountContainer.val(amount);
+                                amountToBePaidContainer.val(amount);
+                                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                totalAmountContainer.val(totalAmount);
+                                amountPaidContainer.val(amount);
+                            }
+                        }
+                    }
+                })
+            }
+        }).on('focusout', "input[name^='kms_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            console.log(category);
+            if(category == 'Local - DA'){
+                var kms = $(this).val();
+                if (kms != ''){
+                    var daDays = 0;
+                    var amount = 0;
+                    if(kms >= 100){
+                        var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                        var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                        var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                        var daFrom = tripDuration[0].trim();
+                        var daTo = tripDuration[1].trim();
+                        var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                        $.ajax({
+                            url: "<?php echo e(URL::to('calculate/days')); ?>",
+                            method: "POST",
+                            data: {
+                                daFrom: daFrom,
+                                daTo: daTo
+                            },
+                            success: function(response){
+                                daDays = JSON.parse(response);
+                                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                                eligiblePeriodContainer.val(daDays);
+                                if(daDays >= 0){
+                                    $.ajax({
+                                        url:"<?php echo e(URL::to('get/rate')); ?>/" + category + "/" + from,
+                                        success:function(response){
+                                            var res = JSON.parse(response);
+                                            amount = daDays*res[0].amount;
+                                            amountContainer.val(amount);
+                                            totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                            totalAmountContainer.val(totalAmount);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        alert('D.A not allowed. Minimum distance eligible for D.A is 100 Kms round trip');
+                        $(this).closest('div.form-row').find("input[name^='da_eligible_period_']").val('');
+                        $(this).closest('div.form-row').find("input[name^='amount_']").val('');
+                    }
+                }
+            }
+        }).on('focusout', "input[name^='date_range_']", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+            if(category == 'Local - DA (via Air)') {
+                var daDays = 0;
+                var amount = 0;
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var daFrom = tripDuration[0].trim();
+                var daTo = tripDuration[1].trim();
+                var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                $.ajax({
+                    url: "<?php echo e(URL::to('calculate/days')); ?>",
+                    method: "POST",
+                    data: {
+                        daFrom: daFrom,
+                        daTo: daTo
+                    },
+                    success: function (response) {
+                        daDays = JSON.parse(response);
+                        eligiblePeriodContainer.val(daDays);
+                        if(amountContainer.length > 0){
+                            console.log(amountContainer);
+                            var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                            if(daDays >= 0){
+                                $.ajax({
+                                    url:"<?php echo e(URL::to('get/rate')); ?>/" + category + "/" + from,
+                                    success:function(response){
+                                        var res = JSON.parse(response);
+                                        amount = daDays*res[0].amount;
+                                        amountContainer.val(amount);
+                                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                                        totalAmountContainer.val(totalAmount);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }).on('change', "select[name^=accomodation_food_], select[name^=currency_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Foreign - DA'){
+                var amount = 0;
+                var accomodation_food = $(this).val();
+                var eligiblePeriodContainer = $(this).closest('div.form-row').find("input[name^='da_eligible_period_']");
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var currencyContainer = $(this).closest('div.form-row').find("select[name^='currency_']");
+                var forexAmountContainer = $(this).closest('div.form-row').find("select[name^='currency_']");
+                var localAmountContainer = $(this).closest('div.form-row').find("select[name^='local_amount_']");
+                if(accomodation_food){
+                    var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                    var personalDays = $(this).closest('div.form-row').find("input[name^='personal_days_']").val();
+                    var diffDays = 0;
+                    var daFrom = tripDuration[0].trim();
+                    var daTo = tripDuration[1].trim();
+                    var from = $.format.date(new Date(tripDuration[0].split(' ')[0]), "yyyy-MM-dd");
+                    $.ajax({
+                        url: "<?php echo e(URL::to('calculate/days')); ?>",
+                        method: "POST",
+                        data: {
+                            daFrom: daFrom,
+                            daTo: daTo
+                        },
+                        success: function(response){
+                            console.log('Response: '+response);
+                            diffDays = JSON.parse(response);
+                            foreignRateCalculation();
+                        }
+                    });
+                    function foreignRateCalculation(){
+                        if (personalDays < diffDays){
+                            diffDays = diffDays - personalDays;
+                            if(accomodation_food == 'Own Accomodation'){
+                                eligiblePeriodContainer.val((diffDays).toFixed(1));
+                            }
+                            else if(accomodation_food == 'Accomodation by Host'){
+                                eligiblePeriodContainer.val((diffDays/2).toFixed(1));
+                            }
+                            else if(accomodation_food == 'Both Accomodation & Food by Host'){
+                                eligiblePeriodContainer.val((diffDays/3).toFixed(1));
+                            }
+                            var eligible_period = eligiblePeriodContainer.val();
+                            $.ajax({
+                                url: "<?php echo e(URL::to('get/rate')); ?>/" + category + "/" + from,
+                                success:function(response){
+                                    var res = JSON.parse(response);
+                                    amount = eligible_period*res[0].amount;
+                                    amountContainer.val(amount);
+                                }
+                            })
+                        }
+                        else{
+                            alert('Personal days must be less than DA days');
+                            $(this).closest('div.form-row').find("input[name^='personal_days_']").val(0)
+                        }
+                    }
+                }
+                else{
+                    eligiblePeriodContainer.val(0);
+                    amountContainer.val(0);
+                }
+            }
+        }).on('change', "input[name^=date_range_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Local - Hotel Stay'){
+                var durationContainer = $(this).closest('div.form-row').find("input[name^='duration_']");
+
+                var tripDuration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+                var dateFrom = new Date((tripDuration[0]).trim());
+                var dateTo = new Date((tripDuration[1]).trim());
+                var timeDiff = Math.abs(dateTo.getTime() - dateFrom.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                diffDays = diffDays+1;
+                durationContainer.val(diffDays);
+            }
+        }).on('change', "input[name^=forex_amount_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Foreign - Expenses'){
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                var amount = $(this).val();
+                amountContainer.val(amount);
+                totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                totalAmountContainer.val(totalAmount);
+            }
+        }).on('change', "select[name^=description_]", function(){
+            var category = $('#'+$(this).closest('div.card').data('parent')+' option:selected').text();
+            if(category == 'Meal - Out of office' || category == 'Meal - Out of Lahore Posting'){
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+                var meal_dates = $(this).closest('div.form-row').find("input[name^='meal_dates_']");
+                var description = $(this).closest('div.form-row').find("select[name^='description_']").val();
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amount = 0;
+                var mealDays = meal_dates.val().split(',');
+                mealDays = mealDays.length;
+                var from = $(this).closest('div.form-row').find("select[name^='date_']").val();
+                var totalAmount = totalAmountContainer.val()-amountContainer.val();
+                $.ajax({
+                    url: "<?php echo e(URL::to('get/rate')); ?>/" + description + "/" + from,
+                    success:function(response){
+                        var res = JSON.parse(response);
+                        amount = res[0].amount*mealDays;
+                        amountContainer.val(amount);
+                        totalAmount = parseInt(totalAmount)+ parseInt(amount);
+                        totalAmountContainer.val(totalAmount.toFixed(0));
+                    },
+                    error:function(response){
+                        console.log(response);
+                    }
+                });
+
+            }
+        }).on('change',"select[name^=travel_order_]",function(){
+            if($(this).val() != ""){
+                if ($(this).val() == $("select[name^=travel_order_]").not(this).val()) {
+                    alert('You have already selected this travel order for another line item.');
+                    $(this).val("");
+                }
+            }
+        }).on('click', '#removeCategory', function(){
+            if(confirm('Are you sure you want to remove this ?')){
+                var categoryContainer = $(this).closest('div.form-row');
+                var categoryItemsContainer = $(this).closest('div.form-row').find("select[name^='voucher_categories_'] option:selected");
+                $('#'+categoryItemsContainer.data('view')).remove();
+                categoryContainer.remove();
+            }
+
+        }).on('click', '#removeCategoryItem', function(){
+            if(confirm('Are you sure you want to remove this ?')){
+                var categoryItemContainer = $(this).closest('div.form-row');
+                var totalAmountContainer = $('#total_'+$(this).closest('div.card').data('parent'));
+                var amountContainer = $(this).closest('div.form-row').find("input[name^='amount_']");
+
+                var totalAmount = totalAmountContainer.val() - amountContainer.val();
+                totalAmountContainer.val(totalAmount);
+                categoryItemContainer.remove();
+            }
+        }).on('change', '.datetimeOutOfLahore', function(){
+            var duration = ($(this).closest('div.form-row').find("input[name^='date_range_']").val()).split("-");
+            var dateFrom = new Date((duration[0]).trim());
+            var dateTo = new Date((duration[1]).trim());
+
+            var timeDiff = Math.abs(dateTo.getTime() - dateFrom.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }).on('change', '.official_travel', function(){
+            if($(this).val() == 'Yes'){
+                if(confirm('Are you sure that you were on official travel other than Kasur')){
+                    $(this).val('Yes');
+                }
+                else{
+                    $(this).val('No');
+                }
+            }
+        }).on('change', '.country', function(){
+            if(confirm('Are you sure country is not available in list ?')){
+                var otherCountryContainer = $(this).closest('div.form-row').find("input[name^='country_']");
+                $(otherCountryContainer).attr('hidden', false);
+                $(otherCountryContainer).attr('disabled', false);
+                $(this).attr('hidden', true);
+                $(this).attr('disabled', true);
+            }
+        });
+    </script>
+    <script>
+        $('#chargeTo').on('change', function(){
+            if($(this).val() == 'Cost Center'){
+               $('#costCenter').removeAttr('hidden');
+               $('.costCenter').attr('required', true);
+               $('.costCenter').addClass('select2');
+               $('.select2').select2();
+               $('#orderNumber').attr('hidden', true);
+               $('#orderNumber').removeAttr('required');
+           }
+            else if($(this).val() == 'Order'){
+                $('.costCenter').removeAttr('required');
+                $('.costCenter').next('.select2-container').hide();
+                $('#costCenter').attr('hidden', true);
+                $('#orderNumber').removeAttr('hidden');
+                $('#orderNumber').attr('required', true);
+            }
+            else{
+                $('.costCenter').removeAttr('required');
+                $('.costCenter').next('.select2-container').hide();
+                $('#costCenter').attr('hidden', true);
+                $('#orderNumber').removeAttr('hidden');
+                $('#orderNumber').attr('hidden', true);
+            }
+        });
+        $('#addCategory').click(function(evt){
+            evt.preventDefault();
+            if($('#voucher_categories_'+categoriesCount).val() == ""){
+                alert('You cannot add more categories without completing the first category');
+            }
+            else{
+                categoriesCount = categoriesCount+1;
+                $('#categoriesCount').val(categoriesCount);
+                $.ajax({
+                    url: "<?php echo e(URL::to('voucher/category/add')); ?>/" + categoriesCount,
+                    data:{
+                        type: "<?php echo $type; ?>",
+                    },
+                    success:function (response){
+                        $("#rowContainer").append(JSON.parse(response).row);
+                        $('.select2').select2({
+                            tags: true
+                        });
+                    }
+                });
+            }
+        });
+        function localRateCalculation(from){
+            $.ajax({
+                url: "<?php echo e(URL::to('calculate/forex-to-local')); ?>" + "/" + from,
+                success:function(response){
+                    var ress = JSON.parse(response);
+                }
+            });
+
+        }
+    </script>
+    <?php if(isset($voucher)): ?>
+        <script>
+            $(document).ready(function(){
+                $('.card-content').addClass('show');
+                $('.select2').select2({
+                    tags: true
+                });
+            })
+        </script>
+    <?php endif; ?>
+    <script>
+        $('#voucher-form').on('keypress', function(e){
+            var key = e.charCode || e.keyCode || 0;
+            if(key==13){
+                e.preventDefault();
+            }
+        })
+    </script>
+<?php $__env->stopSection(); ?>
+
+<style>
+    
+</style>
+<?php echo $__env->make('layouts.ers-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

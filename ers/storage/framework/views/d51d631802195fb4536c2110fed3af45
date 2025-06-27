@@ -1,0 +1,171 @@
+<?php $__env->startSection('header'); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/vendors/css/forms/selects/select2.min.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/css/core/menu/menu-types/horizontal-menu.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('app-assets/css/plugins/forms/wizard.css')); ?>">
+    <style>
+        input[type='number'] {
+            -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    </style>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <?php if(count($errors) > 0): ?>
+        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Oh !</strong> Please fix the following issues to continue
+            <ul class="error">
+                <?php foreach($errors->all() as $error): ?>
+                    <li style="list-style: circle"><?php echo e($error); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+    <?php if(Session::has("error")): ?>
+        <div class="alert bg-danger alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+            <span class="alert-icon"><i class="la la-thumbs-o-down"></i></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Oh !</strong> <?php echo e(Session::get("error")); ?>
+
+        </div>
+    <?php endif; ?>
+    <?php if(Session::has("success")): ?>
+        <div class="alert bg-success alert-icon-left alert-arrow-left alert-dismissible mb-2" role="alert">
+            <span class="alert-icon"><i class="la la-thumbs-o-up"></i></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Yeah !</strong> <?php echo e(Session::get("success")); ?>
+
+        </div>
+    <?php endif; ?>
+    <div class="content-body">
+        <section class="flexbox-container">
+            <section id="validation">
+                <div class="row">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                <h1>Welcome, <br><strong class="primary darken-3"><?php echo e($employee->employee_name); ?>!</strong></h1>
+                                <span>Sit tight and fill in the required information. You are responsible for your reimbursements!</span><br>
+                                <span>Please complete the following steps to proceed further.</span>
+                            </div>
+                            <div class="card-content collapse show">
+                                <div class="card-body">
+                                    <form action="<?php echo e(URL::to('welcome')); ?>" id="welcome-form" method="POST" class="steps-validation wizard-circle">
+                                        <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                        <h6>Personal Information</h6>
+                                        <fieldset>
+                                            <div class="row mt-2">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control required" id="lastName4" value="<?php echo e(Input::old('nickname')); ?>" name="nickname" placeholder="Nick Name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <input type="email" class="form-control required" id="firstName3" value="<?php echo e(Input::old('email')); ?>" name="email" placeholder="Email Address">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control required" id="lastName3" value="<?php echo e(Input::old('mobile')); ?>" maxlength="11" name="mobile" placeholder="Mobile Number">
+                                                        <small>e.g. 03004XXXXXX, without (-)</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control required" id="eventName3" value="<?php echo e(Input::old('cnic')); ?>" maxlength="13" name="cnic" placeholder="CNIC Number">
+                                                        <small>e.g. 35XXXXXXXXXXX, without (-)</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <h6>Bank Information</h6>
+                                        <fieldset>
+                                            <div class="row mt-2">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="emailAddress6" value="<?php echo e(Input::old('bank_account_number')); ?>" maxlength="16" name="bank_account_number" placeholder="MCB Bank Account Number">
+                                                        <small>e.g. 00000000XXXXXXXX (16 digit bank account number)</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <select class="form-select form-control" id="bank" name="bank" required>
+                                                        <option value="">Select Bank</option>
+                                                        <?php foreach($banks as $bank): ?>
+                                                            <option value="<?php echo e($bank->id); ?>"><?php echo e($bank->bank_name); ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <small></small>
+                                                </div>
+
+                                            </div>
+                                        </fieldset>
+                                        <h6>Change Password</h6>
+                                        <fieldset>
+                                            <div class="row mt-2">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control" id="lastName3" value="<?php echo e(Input::old('old_password')); ?>" name="old_password" placeholder="Old Password">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control" id="firstName3" value="<?php echo e(Input::old('new_password')); ?>" name="new_password" placeholder="New Password">
+                                                        <small>Your password must be more than <strong>8 characters long</strong>, should contain at-least <strong>1 Uppercase</strong>, <strong>1 Lowercase</strong>, <strong>1 Numeric</strong> and <strong>1 special character</strong>.</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <input type="password" class="form-control" id="eventName3" value="<?php echo e(Input::old('new_password_confirmation')); ?>" name="new_password_confirmation" placeholder="Confirm New Password">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <h6>Finish</h6>
+                                        <fieldset>
+                                            <hr>
+                                            <div class="row mt-2">
+                                                <div class="card-header">
+                                                    <h1 class="success darken-3">Great!</h1>
+                                                    <span>Now please 'Submit' to continue</span>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+    <script src="<?php echo e(asset('app-assets/vendors/js/forms/select/select2.full.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/forms/select/form-select2.js')); ?>" type="text/javascript"></script>
+    <script type="text/javascript" src="<?php echo e(asset('app-assets/vendors/js/ui/jquery.sticky.js')); ?>"></script>
+    <script type="text/javascript" src="<?php echo e(asset('app-assets/vendors/js/charts/jquery.sparkline.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/extensions/jquery.steps.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/pickers/daterange/daterangepicker.js')); ?>" type="text/javascript"></script>
+    <script src="<?php echo e(asset('app-assets/vendors/js/forms/validation/jquery.validate.min.js')); ?>" type="text/javascript"></script>
+    <script type="text/javascript" src="<?php echo e(asset('app-assets/js/scripts/ui/breadcrumbs-with-stats.js')); ?>"></script>
+    <script src="<?php echo e(asset('app-assets/js/scripts/forms/wizard-steps.js')); ?>" type="text/javascript"></script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.login-layout', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

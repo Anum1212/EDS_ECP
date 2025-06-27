@@ -1,0 +1,82 @@
+<?php /**/ $employees = \App\Employee::with('department', 'department.businessUnit', 'divisionsApprover')->whereHas('department.businessUnit.company', function($query) use ($employee){$query->where('companies.group_name', '=', $employee->department->businessUnit->company->group_name);})->get(); /**/ ?>
+<?php /**/ $statuses = \App\Voucher::select('status')->distinct('status')->get(); /**/ ?>
+<?php /**/ $categories = \App\Category::whereHas('company', function($query) use ($employee){$query->where('companies.group_name', '=', $employee->department->businessUnit->company->group_name);})->get(); /**/ ?>
+<?php /**/ $departments = \App\Department::whereHas('businessUnit.company',function($query) use ($employee){ $query->where('companies.group_name', '=', $employee->department->businessUnit->company->group_name); })->get() /**/ ?>
+<div class="content-body">
+    <section id="form-control-repeater">
+        <form action="<?php echo e(URL::to('extract/stats')); ?>" method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-gradient-x-grey-blue">
+                            <h4 class="card-title white" id="file-repeater">Basic Information for <h4 class="white">Stats Generation</h4></h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form row">
+                                    <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                                    <div class="form-group col-md-2 mb-2">
+                                        <label>From</label>
+                                        <input type="date" class="form-control" value="<?php echo e(date('Y-m-d', strtotime(date('Y-m-d').'- 1 month'))); ?>" name="from" required>
+                                    </div>
+                                    <div class="form-group col-md-2 mb-2">
+                                        <label>To</label>
+                                        <input type="date" class="form-control" value="<?php echo e(date('Y-m-d')); ?>" name="to" required>
+                                    </div>
+                                </div>
+                                <div class="form row">
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Employees</label>
+                                        <select class="select2 form-control costCenters" name="employees[]" multiple>
+                                            <?php foreach($employees as $item): ?>
+                                                <option value="<?php echo e($item->id); ?>"><?php echo e($item->employee_number.' / '.$item->employee_name.' - '.$item->department->businessUnit->company->company_name); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Charged To Cost Centers</label>
+                                        <select class="select2 form-control costCenters" name="cost_centers[]" multiple>
+                                            <?php foreach($departments as $department): ?>
+                                                <option value="<?php echo e($department->id); ?>"><?php echo e($department->cost_center.' / '.$department->department_name.' - '.$department->businessUnit->company->company_name); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Categories</label>
+                                        <select class="select2 form-control categories" name="categories[]" multiple>
+                                            <?php foreach($categories as $category): ?>
+                                                <option value="<?php echo e($category->id); ?>"><?php echo e($category->category_name.' - '.$category->company->company_name); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form row">
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Select Status</label>
+                                        <select class="select2 form-control statuses" name="statuses[]" multiple>
+                                            <?php foreach($statuses as $status): ?>
+                                                <option value="<?php echo e($status->status); ?>"><?php echo e($status->status); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4 mb-2">
+                                        <label>Select Columns</label>
+                                        <select class="select2 form-control statuses" name="columns[]" multiple>
+                                            <?php foreach($columns as $column): ?>
+                                                <option value="<?php echo e($column); ?>"><?php echo e(ucwords(str_replace('_', ' ',$column))); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-info btn-sm" type="submit"><i class="la la-paper-plane-o"></i> Submit </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
