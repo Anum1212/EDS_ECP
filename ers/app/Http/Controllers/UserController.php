@@ -6,12 +6,10 @@ use App\Bank;
 use App\Email_Client;
 use App\Employee;
 use App\Employee_Bank;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\SAP_Sync;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -21,11 +19,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use PhpSpec\Exception\Exception;
-
-use Guzzle\Service\Client;
-use Guzzle\Http\Message\Request as GuzzleRequest;
-use Guzzle\Http\Exception\RequestException;
-use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {

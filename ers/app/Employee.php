@@ -1,18 +1,23 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    public function sapRecord(){
+    public function sapRecord()
+    {
         return $this->hasOne('App\SAP_Sync', 'employee_number', 'employee_number');
-    }    
+    }
 
-    public function employeeGrade(){
+    public function employeeGrade()
+    {
         return $this->belongsTo('App\Grade', 'grade_id');
     }
-    
-    public function entitlements(){
+
+    public function entitlements()
+    {
         return $this->hasMany('App\Entitlements', 'employee_number', 'employee_number');
     }
 
@@ -26,55 +31,87 @@ class Employee extends Model
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', NULL);
     }
 
-    public function approvedVouchers(){
+    public function approvedVouchers()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', NULL)->whereIn(
-            'status', [
+            'status',
+            [
                 'Approved - Documents in transit',
                 'Processed',
                 'In Process',
                 'Posted'
-            ]);
+            ]
+        );
     }
 
-    public function unapprovedVouchers(){
+    public function unapprovedVouchers()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', NULL)->whereNotIn(
-            'status', [
+            'status',
+            [
                 'Approved - Documents in transit',
                 'Processed',
                 'In Process',
                 'Posted'
-            ]);
+            ]
+        );
     }
-
-    // Y-Lunch Section
-    public function totalYLunch(){
+    //------------------------------------------------------------------------------------
+    // --------------------------------- Y-Lunch Section ---------------------------------
+    //------------------------------------------------------------------------------------
+    public function totalYLunch()
+    {
         return $this->hasMany('App\Mess_Booking')->whereIn(
-            'status', [
+            'status',
+            [
                 'Draft',
                 'Submitted',
                 'Approved',
                 'Rejected'
-            ]);
+            ]
+        );
     }
-    public function approvedYLunch(){
+    public function approvedYLunch()
+    {
         return $this->hasMany('App\Mess_Booking')->where('status', 'Approved');
     }
-    public function unapprovedYLunch(){
+    public function unapprovedYLunch()
+    {
         return $this->hasMany('App\Mess_Booking')->where('status', 'Submitted');
     }
-        public function rejectedYLunch(){
-        return $this->hasMany('App\Mess_Booking')->where('status', "'Rejected");
+    public function rejectedYLunch()
+    {
+        return $this->hasMany('App\Mess_Booking')->where('status', 'Rejected');
     }
 
-        public function approvedYLunchForApprover(){
-        return $this->hasMany('App\Mess_Booking')->where('status', 'Approved');
+    public function totalYLunchForApprover()
+    {
+        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->whereIn(
+            'status',
+            [
+                'Draft',
+                'Submitted',
+                'Approved',
+                'Rejected'
+            ]
+        );
     }
-    public function unapprovedYLunchForApprover(){
-        return $this->hasMany('App\Mess_Booking')->where('status', 'Submitted');
+    public function approvedYLunchForApprover()
+    {
+        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->where('status', 'Approved');
     }
-        public function rejectedYLunchForApprover(){
-        return $this->hasMany('App\Mess_Booking')->where('status', "'Rejected");
+    public function unapprovedYLunchForApprover()
+    {
+        // The correct way to define this relationship:
+        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->where('status', 'Submitted');
     }
+    public function rejectedYLunchForApprover()
+    {
+        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->where('status', "'Rejected");
+    }
+
+
+
 
     public function department()
     {
@@ -101,15 +138,18 @@ class Employee extends Model
         return $this->belongsToMany('App\Voucher', 'voucher_employee')->where('is_travel_order', '=', NULL)->wherePivot('approved', '=', 0);
     }
 
-    public function divisionsApprover(){
+    public function divisionsApprover()
+    {
         return $this->belongsToMany('App\Business_Unit', 'business_unit_employee', 'employee_id', 'business_unit_id');
     }
 
-    public function vehicles(){
+    public function vehicles()
+    {
         return $this->hasMany('App\Vehicle');
     }
 
-    public function consumedLitres(){
+    public function consumedLitres()
+    {
         return $this->hasManyThrough('App\Voucher_Item', 'App\Voucher')->selectRaw('SUM(voucher_items.litres) as consumedLitres')->whereNotNull('voucher_items.litres');
     }
 
@@ -118,37 +158,47 @@ class Employee extends Model
      *
      */
 
-    public function travelOrders(){
+    public function travelOrders()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', 1);
     }
 
-    public function approvedUnusedTravelOrders(){
+    public function approvedUnusedTravelOrders()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', 1)->whereIn(
-            'status', [
+            'status',
+            [
                 'Posted'
-            ]);
+            ]
+        );
     }
 
-    public function approvedTravelOrders(){
+    public function approvedTravelOrders()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', 1)->whereIn(
-            'status', [
+            'status',
+            [
                 'Approved - Documents in transit',
                 'Processed',
                 'In Process',
                 'Posted',
                 'Adjusted'
-            ]);
+            ]
+        );
     }
 
-    public function unapprovedTravelOrders(){
+    public function unapprovedTravelOrders()
+    {
         return $this->hasMany('App\Voucher')->where('is_travel_order', '=', 1)->whereNotIn(
-            'status', [
+            'status',
+            [
                 'Approved - Documents in transit',
                 'Processed',
                 'In Process',
                 'Posted',
                 'Adjusted'
-            ]);
+            ]
+        );
     }
 
     public function travelOrdersRequireApproval()

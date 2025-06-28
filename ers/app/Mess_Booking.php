@@ -18,6 +18,6 @@ class Mess_Booking extends Model {
 
     public function approver()
     {
-        return $this->belongsTo(Employee::class, 'approver_id', 'employee_number');
+        return $this->belongsTo(Employee::class, 'approver_emp_number', 'employee_number');
     }
 }

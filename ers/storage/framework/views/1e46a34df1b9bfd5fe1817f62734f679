@@ -8,7 +8,7 @@
     <meta name="description" content="Employee Reimbursement System - Packages Group">
     <meta name="keywords" content="voucher, travelling, allowances">
     <meta name="author" content="PIXINVENT">
-    <title>SAP - SuccessFactors</title>
+    <title>E C P</title>
     <link rel="apple-touch-icon" href="<?php echo e(asset('assets/img/SF.ico')); ?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?php echo e(asset('assets/img/SF.ico')); ?>">
     <link
@@ -263,7 +263,7 @@
                         <a class="navbar-brand" href="<?php echo e(URL::to('dashboard')); ?>">
                             <img class="brand-logo" style="width: 70px" alt="SAP logo"
                                 src="<?php echo e(asset('assets/img/SAP-logo.png')); ?>">
-                            <h3 class="brand-text">SuccessFactors</h3>
+                            <h3 class="brand-text">E C P</h3>
                         </a>
                     </li>
                     <!-- Mobile collapse button -->
@@ -338,7 +338,7 @@
 <?php endif; ?>-->
 
                         <!--Admin IDs-->
-                        <?php if($employee->id == 1 || $employee->id == 2): ?>
+                        <?php if($employee->id == 1 || $employee->id == 2 || $employee->id == 3847 || $employee->id == 3848 || $employee->id == 3849 || $employee->id == 3850 || $employee->id == 3851 || $employee->id == 7362 || $employee->id == 7363): ?>
                             <li class="nav-item dropdown position-relative">
                                 <a class="nav-link" href="#" id="navbarToDo" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -391,7 +391,7 @@
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="la la-check-circle" style="font-size: 24px;"></i>
                                         <span class="badge badge-danger">
-                                            <?php echo e(count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval)); ?>
+                                            <?php echo e(count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) + count($employee->unapprovedYLunchForApprover)); ?>
 
                                         </span>
                                     </a>
@@ -424,8 +424,44 @@
                                                 <?php echo e(count($employee->vouchersDeclined) + count($employee->travelOrdersDeclined)); ?>
 
                                             </span>
-
                                         </a>
+
+
+                                        <?php /* Y-Lunch */ ?>
+                                        <!-- Pending Section -->
+                                        <a class="dropdown-item" href="<?php echo e(URL::to('mess-bookings/approver/pending')); ?>">
+                                            <strong style="margin-left: 8%">Pending</strong>
+                                            <span
+                                                style="background-color: #FF9149; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                <?php echo e(count($employee->unapprovedYLunchForApprover)); ?>
+
+                                            </span>
+                                        </a>
+
+                                        <!-- Approved Section -->
+                                        <a class="dropdown-item" href="<?php echo e(URL::to('mess-bookings/approver/approved')); ?>">
+                                            <strong style="margin-left: 8%">Approved</strong>
+                                            <span
+                                                style="background-color: #28D094; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                <?php echo e(count($employee->approvedYLunchForApprover)); ?>
+
+                                            </span>
+                                        </a>
+
+                                        <!-- Rejected Section -->
+                                        <a class="dropdown-item" href="<?php echo e(URL::to('mess-bookings/approver/rejected')); ?>">
+                                            <strong style="margin-left: 8%">Declined</strong>
+                                            <span
+                                                style="background-color: #1E9FF2; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
+                                                <?php echo e(count($employee->rejectedYLunchForApprover)); ?>
+
+                                            </span>
+                                        </a>
+                                        <?php if(in_array($employee->user_name, ['pl-medical-officer', 'sp-medical-officer', 'bsp-medical-officer', 'dic-medical-officer', 'prel-medical-officer'])): ?>
+                                            <a class="dropdown-item" href="<?php echo e(URL::to('process/medical/vouchers')); ?>">
+                                                <strong style=""> Process Medical Claims </strong>
+                                            </a>
+                                        <?php endif; ?>    
                                     </div>
                                 </li>
                             <?php endif; ?>
@@ -433,8 +469,13 @@
                             <li class="dropdown dropdown-user nav-item">
                                 <a class="nav-link" href="#" data-toggle="dropdown"
                                     style="display: flex; align-items: center;">
-                                    <img src="<?php echo e(asset('assets/img/user-placeholder.jpg')); ?>" alt="User Avatar"
-                                        class="rounded-circle mr-1" style="width: 30px; height: 30px;">
+                                    <?php if(isset($photo) && isset($photo_mimetype)): ?>
+                                        <img src="data:<?php echo e($photo_mimetype); ?>;base64,<?php echo e(base64_encode($photo)); ?>" alt="User Avatar"
+                                            class="rounded-circle mr-1" style="width: 30px; height: 30px;">
+                                    <?php else: ?>
+                                        <img src="<?php echo e(asset('assets/img/user-placeholder.jpg')); ?>" alt="User Avatar"
+                                            class="rounded-circle mr-1" style="width: 30px; height: 30px;">
+                                    <?php endif; ?>        
                                     <span class="user-name text-bold-700"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" style="width: 350px;">
@@ -454,7 +495,6 @@
             </div>
         </div>
     </nav>
-
     <div class="app-content content">
         <div class="content-wrapper">
             <div id="jsMessage"></div>

@@ -2,57 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\SAP_Sync;
 use App\Employee;
 use App\Department;
 use App\Mess_Booking;
 use App\Mess_Booking_Type;
 
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
 
 class MessBookingController extends Controller
 {
 	// mess bookings list for employee
-	public function showMessBookings($type = null)
+	public function showMessBookings($userType, $listType = null)
 	{
-		$employee_id = Session::get('id');
+		$data['employee'] = Session::get('emp_details');
 
-		if (isset($employee_id)) {
+		if (isset($data['employee']->id)) {
 			$data['path'] = Route::getFacadeRoot()->current()->uri();
-			$employee = Session::get('emp_details');
 
 			// Handle if employee is not found
-			if (!$employee) {
+			if (!$data['employee']) {
 				Session::flash('error', 'Employee record not found for your session.');
 				return redirect('/');
 			}
-
-			$data['employee'] = $employee; // Pass the employee model to the view
-			$data['panelHeading'] = 'Mess Bookings';
+			$data['employee_sf_data'] = Session::get('sf_details');
+			$data['panelHeading'] = 'Y-Lunch';
 			$data['forwardingURL'] = 'mess-booking/details/';
 
-			if ($type == 'approved') {
-				$data['messBookings'] = Mess_Booking::where('status', 'Approved')->get();
+			if ($listType == 'approved') {
 				$data['panelHeading'] = 'Approved Y-Lunch'; // Update heading
-			} elseif ($type == 'unapproved' || $type == 'pending') {
-				$data['messBookings'] = Mess_Booking::where('status', 'Submitted')->get();
-				$data['panelHeading'] = 'Unapproved Y-Lunch'; 
-				if ($type == 'pending') {
-					$data['panelHeading'] = 'Pending Y-Lunch'; // Update heading
-				}
-			} elseif ($type == 'rejected') {
-				$data['messBookings'] = Mess_Booking::where('status', 'Rejected')->get();
+			} elseif ($listType == 'unapproved') {
+				$data['panelHeading'] = 'UnApproved Y-Lunch'; // Update heading
+			} elseif ($listType == 'pending') {
+				$data['panelHeading'] = 'Pending Y-Lunch'; // Update heading
+			} elseif ($listType == 'rejected') {
 				$data['panelHeading'] = 'Rejected Y-Lunch'; // Update heading
 			}
-
-			$data['userType'] = 'employee';
+			if ($userType == 'employee') {
+				$data['userType'] = 'employee';
+				if ($listType == 'approved') {
+					$data['messBookings'] = $data['employee']->approvedYLunch()->get();
+				} elseif ($listType == 'unapproved') {
+					$data['messBookings'] = $data['employee']->unapprovedYLunch()->get();
+				} elseif ($listType == 'rejected') {
+					$data['messBookings'] = $data['employee']->rejectedYLunch()->get();
+				} else {
+					$data['messBookings'] = $data['employee']->totalYLunch()->get();
+				}
+				
+			} elseif ($userType == 'approver') {
+				$data['userType'] = 'approver';
+				if ($listType == 'approved') {
+					$data['messBookings'] =  $data['employee']->approvedYLunchForApprover()->get();
+				} elseif ($listType == 'pending') {
+					$data['messBookings'] =  $data['employee']->unapprovedYLunchForApprover()->with(['employee'])->get();
+				} elseif ($listType == 'rejected') {
+					$data['messBookings'] =  $data['employee']->rejectedYLunchForApprover()->get();
+				} else {
+					$data['messBookings'] =  $data['employee']->totalYLunchForApprover()->get();
+				}
+				$data['generateReport'] = 'mess-booking/report'; // Enable report generation for approvers
+			} else {
+				Session::flash('error', 'Invalid user type.');
+				return redirect('/');
+			}
 
 			// Add counter to each booking (useful for display in a table)
 			$counter = 1;
@@ -60,7 +78,6 @@ class MessBookingController extends Controller
 				$messBooking->counter = $counter;
 				$counter++;
 			}
-
 			return view('basic.mess-bookings', $data);
 		} else {
 			Session::flash('error', 'Your session has ended. Please login to continue.');
@@ -69,71 +86,51 @@ class MessBookingController extends Controller
 	}
 
 	// individual mess booking details
-	public function showMessBookingDetails($id)
+	public function showMessBookingDetails($id, $userType = null)
 	{
 		$data['employee'] = Session::get('emp_details');
 		if (isset($data['employee']->id)) {
+			$data['logged_in_employee_sf_data'] = Session::get('sf_details');
+
 			$data['layout'] = 'ers-layout';
 			$data['path'] = Route::getFacadeRoot()->current()->uri();
-			$data['employee_sf_data'] = Session::get('sf_details');
-			if ($data['employee_sf_data']->line_manager_id == null) {
-				Session::flash('error', 'You do not have a Line Manager assigned in. Please contact HR.');
-				return redirect('dashboard');
-			} elseif (!$data['employee']->entitlements->contains('entitlement_type', 'Y-Lunch')) {
+			$data['panelHeading'] = 'Y-Lunch Details';
+
+			$data['messBooking'] = Mess_Booking::find($id);
+			$data['messBookingType'] = Mess_Booking_Type::find($data['messBooking']->mess_booking_type_id)->first()->name;
+
+			$data['userType'] = $userType;
+			$data['initiator_employee_details'] = Employee::where('id', $data['messBooking']->employee_id)->first();
+			$data['initiator_employee_sf_details'] = SAP_Sync::where('employee_number', $data['initiator_employee_details']->employee_number)->first();
+			$data['departments'] = Department::whereHas('businessUnit.company', function ($query) use ($data) {
+				$query->where('companies.id', '=', $data['initiator_employee_details']->department->businessUnit->company->id);
+			})->get();
+
+			if (!$data['initiator_employee_details']->entitlements->contains('entitlement_type', 'Y-Lunch')) {
 				Session::flash('error', 'You are not entitled for Y-Lunch. Please contact HR.');
 				return redirect('dashboard');
 			}
-
-			$data['departments'] = Department::whereHas('businessUnit.company', function ($query) use ($data) {
-				$query->where('companies.id', '=', $data['employee']->department->businessUnit->company->id);
-			})->get();
-			$data['panelHeading'] = 'Mess Booking Details';
-			$data['submitURL'] = 'mess-booking/submit';
-			$data['deleteURL'] = 'mess-booking/delete';
-			$data['approveURL'] = 'mess-booking/approve';
-			$data['rejectURL'] = 'mess-booking/reject';
-			$data['messBooking'] = Mess_Booking::find($id);
-			$data['messBookingType'] = Mess_Booking_Type::find($data['messBooking']->mess_booking_type_id)->first()->name;
-			if ($data['messBooking']->employee_id == $data['employee']->id) {
+			if ($userType == 'employee') {
+				$data['submitURL'] = 'mess-booking/submit';
+				$data['deleteURL'] = 'mess-booking/delete';
 				$data['userType'] = 'employee';
-			} else {
+			} elseif ($userType == 'approver') {
+				$data['approveURL'] = 'mess-booking/approve';
+				$data['rejectURL'] = 'mess-booking/reject';
 				$data['userType'] = 'approver';
 			}
-
 			return view('basic.mess-booking-details', $data);
 		}
 	}
 
-	// mess bookings list for approver
-	public function showApproverMessBookings()
-	{
-		$employee_id = Session::get('id');
-		if (isset($employee_id)) {
-			$data['path'] = Route::getFacadeRoot()->current()->uri();
-			$data['employee'] = Employee::find($employee_id);
-			$data['panelHeading'] = 'Mess Bookings';
-			$data['forwardingURL'] = 'mess-booking/details/';
-			$data['generateReport'] = 'mess-booking/report';
-			$data['messBookings'] = Mess_Booking::where('approver_id', $employee_id)->get();
-			$data['userType'] = 'approver';
-			$counter = 1;
-			foreach ($data['messBookings'] as $messBooking) {
-				$messBooking->counter = $counter;
-				$counter++;
-			}
-			$data['messBookings_count'] = $data['messBookings']->count();
-			return view('basic.mess-bookings', $data);
-		} else {
-			Session::flash('error', 'Your session has ended. Please login to continue.');
-			return redirect('/');
-		}
-	}
 
 	// show mess booking request form
 	public function showMessBookingForm()
 	{
 		$data['employee'] = Session::get('emp_details');
 		if (isset($data['employee']->id)) {
+		$data['photo'] = Session::get('photo');
+		$data['photo_mimetype'] = Session::get('photo_mimetype');
 			$data['path'] = Route::getFacadeRoot()->current()->uri();
 			$data['employee_sf_data'] = Session::get('sf_details');
 			if ($data['employee_sf_data']->line_manager_id == null) {
@@ -146,7 +143,7 @@ class MessBookingController extends Controller
 			$data['departments'] = Department::whereHas('businessUnit.company', function ($query) use ($data) {
 				$query->where('companies.id', '=', $data['employee']->department->businessUnit->company->id);
 			})->get();
-			$data['panelHeading'] = 'New Mess Booking';
+			$data['panelHeading'] = 'New Y-Lunch';
 			$data['storingURL'] = 'mess-booking/create';
 			$data['messBookingTypes'] = Mess_Booking_Type::all();
 			return view('basic.add-mess-booking', $data);
@@ -189,10 +186,10 @@ class MessBookingController extends Controller
 		$messBooking->booking_name = $BookingName;
 		$messBooking->status = "Draft";
 		$messBooking->save();
-		$messBooking->approver_id = $data['employee_sync']->line_manager_id;
+		$messBooking->approver_emp_number = $data['employee_sync']->line_manager_id;
 		DB::commit();
 		Session::flash('success', 'Your claim is saved');
-		return redirect('mess-booking/details' . '/' . $messBooking->id);
+		return redirect('mess-booking/details' . '/' . $messBooking->id . '/employee');
 	}
 
 	// update mess booking record from draft to submitted
@@ -208,10 +205,10 @@ class MessBookingController extends Controller
 			$messBooking = Mess_Booking::find($id);
 			if ($messBooking->employee_id == $data['employee']->id && $messBooking->status == "Draft") {
 				$data['path'] = Route::getFacadeRoot()->current()->uri();
-				$data['panelHeading'] = 'Mess Booking';
+				$data['panelHeading'] = 'Y-Lunch';
 				DB::beginTransaction();
 				$messBooking->status = "Submitted";
-				$messBooking->approver_id = $data['employee_sf_data']->line_manager_id;
+				$messBooking->approver_emp_number = $data['employee_sf_data']->line_manager_id;
 				$messBooking->save();
 				DB::commit();
 
@@ -245,78 +242,177 @@ class MessBookingController extends Controller
 			}
 		} else {
 			Session::flash('error', 'Your session has ended. Please login to continue.');
-			return redirect('/');
+			return redirect('showMessBookings/employee');
 		}
 	}
 
 	// approve mess booking record for approver only when status is submitted
 	public function approveMessBooking($id)
 	{
-		$data['employee'] = Session::get('emp_details');
-		if (isset($data['employee']->id)) {
-			$messBooking = Mess_Booking::find($id);
-			if (isset($data['employee']->id) && $data['employee']->emplioyee_number == $data['employee']->employee_number){
-				if ($messBooking->status == "Submitted") {
-					$messBooking->status = "Approved";
-					DB::beginTransaction();
-					Session::flash('success', 'Approved Successfuly.');
-					return redirect('dashboard');
-				} else {
-					Session::flash('error', 'You do not have the access to Approve');
-					return redirect('dashboard');
-				}
-			} else {
-				Session::flash('error', 'Your session has ended. Please login to continue.');
-				return redirect('/');
-			}
-		}
-	}
+		$employee = Session::get('emp_details');
 
-	// reject mess booking record for approver only when status is submitted
-	public function rejectMessBooking(Request $request, $id)
-	{
-		$data['employee'] = Session::get('emp_details');
-		$messBooking = Mess_Booking::find($id);
-		if (isset($data['employee']->id) && $data['employee']->emplioyee_number == $data['employee']->employee_number){
-			if ($messBooking->status == "Submitted") {
-				$messBooking->status = "Rejected";
-				$messBooking->remarks = 'Rejected by ' . Employee::find($employee_id)->employee_name . ': ' . $request->input('rejection_comments');
-				$messBooking->save();
-				DB::beginTransaction();
-				Session::flash('success', 'Rejected Successfuly.');
-				return redirect('dashboard');
-			} else {
-				Session::flash('error', 'You do not have the access to Approve');
-				return redirect('dashboard');
-			}
-		} else {
+		if (!isset($employee->id)) {
 			Session::flash('error', 'Your session has ended. Please login to continue.');
 			return redirect('/');
+		}
+
+		$messBooking = Mess_Booking::find($id);
+		if (!$messBooking) {
+			Session::flash('error', 'Y-Lunch not found.');
+			return redirect('dashboard');
+		}
+
+		DB::beginTransaction();
+
+		try {
+			if ($messBooking->status == "Submitted") {
+				$messBooking->status = "Approved";
+				$messBooking->save();
+
+				DB::commit();
+				Session::flash('success', 'Approved Successfully.');
+				return redirect('dashboard');
+			} else {
+				DB::rollBack();
+				Session::flash('error', 'This booking cannot be approved as its status is not "Submitted".');
+				return redirect('dashboard');
+			}
+		} catch (Exception $e) {
+			DB::rollBack();
+			Session::flash('error', 'An error occurred while approving the booking. Please try again.');
+			return redirect('dashboard');
+		}
+	}
+	public function rejectMessBooking(Request $request, $id)
+	{
+		$employee = Session::get('emp_details');
+		$messBooking = Mess_Booking::find($id);
+
+		if (!isset($employee->id)) {
+			Session::flash('error', 'Your session has ended. Please login to continue.');
+			return redirect('/');
+		}
+
+		if (!$messBooking) {
+			Session::flash('error', 'Y-Lunch not found.');
+			return redirect('dashboard');
+		}
+
+		DB::beginTransaction();
+
+		try {
+			if ($messBooking->status == "Submitted") {
+				$messBooking->status = "Rejected";
+				$messBooking->remarks = 'Rejected by ' . $employee->employee_name . ': ' . $request->input('rejection_comments');
+				$messBooking->save();
+
+				DB::commit();
+				Session::flash('success', 'Rejected Successfully.');
+				return redirect('dashboard');
+			} else {
+				DB::rollBack();
+				Session::flash('error', 'This booking cannot be rejected as its status is not "Submitted".');
+				return redirect('dashboard');
+			}
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Session::flash('error', 'An error occurred while processing your request. Please try again.');
+			return redirect('dashboard');
 		}
 	}
 
 	public function generateReport(Request $request)
 	{
-		$employee_id = Session::get('id');
-		if (isset($employee_id)) {
-			$data['date_range'] = $request->input('dateRange');
-			$date_range_split = $array = explode("-", $data['date_range']);
-			$from_date = $date_range_split[0];
-			$to_date = $date_range_split[1];
-			$data['employee'] = Employee::find($employee_id);
-			$data['panelHeading'] = 'Mess Booking Report ' . $data['date_range'];
-			$data['messBookings'] = Mess_Booking::whereBetween('created_at', [$from_date, $to_date])->get();
-			$counter = 1;
-			foreach ($data['messBookings'] as $mess_booking) {
-				$mess_booking->counter = $counter;
-				$mess_booking->employee_name = Employee::find($mess_booking->employee_id)->employee_name;
-				$mess_booking->employee_number = Employee::find($mess_booking->employee_id)->employee_number;
-				$counter++;
-			}
-			return view('basic.mess-bookings-report', $data);
-		} else {
+		$employee = Session::get('emp_details');
+
+		if (!isset($employee->id)) {
 			Session::flash('error', 'Your session has ended. Please login to continue.');
 			return redirect('/');
 		}
+
+		$data['date_range'] = $request->input('dateRange');
+		$status_filter = $request->input('status_filter', 'all');
+
+		$date_range_split = explode("-", $data['date_range']);
+		$from_date = trim($date_range_split[0]);
+		$to_date = trim($date_range_split[1]);
+
+		$from_date = date('Y-m-d', strtotime($from_date));
+		$to_date = date('Y-m-d', strtotime($to_date));
+
+		// Choose method based on status filter
+		switch ($status_filter) {
+			case 'approved':
+				$messBookings = $employee->approvedYLunchForApprover();
+				break;
+			case 'pending':
+				$messBookings = $employee->unapprovedYLunchForApprover();
+				break;
+			case 'rejected':
+				$messBookings = $employee->rejectedYLunchForApprover();
+				break;
+			default:
+				$messBookings = $employee->totalYLunchForApprover();
+				break;
+		}
+
+		$messBookings = $messBookings
+			->whereBetween('created_at', [$from_date, $to_date])
+			->with(['employee'])
+			->get();
+
+		// Generate CSV
+		$filename = "mess_bookings_report_" . $status_filter . "_" . date('Y-m-d_H-i-s') . ".csv";
+
+		$headers = [
+			'Content-Type' => 'text/csv',
+			'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+		];
+
+		$callback = function () use ($messBookings) {
+			$file = fopen('php://output', 'w');
+
+			// CSV Headers
+			fputcsv($file, [
+				'S.No',
+				'Booking Date',
+				'Employee Name',
+				'Employee Number',
+				'Booking Name',
+				'BSP Employee Count',
+				'Guest Count',
+				'Total Head Count',
+				'Booking Start Date',
+				'Booking End Date',
+				'Booking Time',
+				'Status',
+				'Remarks'
+			]);
+
+			// CSV Data
+			$counter = 1;
+			foreach ($messBookings as $booking) {
+				fputcsv($file, [
+					$counter,
+					date('M d, Y', strtotime($booking->created_at)),
+					$booking->employee ? $booking->employee->employee_name : 'N/A',
+					$booking->employee ? $booking->employee->employee_number : 'N/A',
+					$booking->booking_name,
+					$booking->bsp_employee_count,
+					$booking->guest_count,
+					$booking->total_head_count,
+					date('M d, Y', strtotime($booking->booking_start_date)),
+					date('M d, Y', strtotime($booking->booking_end_date)),
+					$booking->booking_time,
+					$booking->status,
+					$booking->remarks ? $booking->remarks : ''
+				]);
+				$counter++;
+			}
+
+			fclose($file);
+		};
+
+		return response()->stream($callback, 200, $headers);
 	}
 }

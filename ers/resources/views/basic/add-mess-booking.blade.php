@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/custom/daterangepicker.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/custom/air-date-picker/css/datepicker.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/plugins/animate/animate.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/custom/site.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/custom/vouchers.css') }}">
     <style>
         input[type='number'] {
             -moz-appearance: textfield;
@@ -25,29 +25,35 @@
 @endsection
 
 @section('body')
-    <div class="content-header row">
-        <div class="content-header-left col-md-6 col-10 mb-2" style="color: white">
-            <h3 class="content-header-title" style="color: white">{{ $panelHeading }}</h3>
-        </div>
-    </div>
-    <div class="content-body">
-        <section id="form-control-repeater">
+<div class="content-body">
+    <section id="form-control-repeater">
             <form action="{{ URL::to($storingURL) }}" method="post" id="mess-booking-form" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="row justify-content-center">
-                    <div class="col-md-10">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title" id="file-repeater" style="font-weight: bold;">Your Profile</h4>
-                                <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
-                            </div>
-                            <div class="card-content collapse show">
-                                <div class="card-body">
-                                    <div class="row">
+                <div class="col-md-11">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title font-weight-bold" id="file-repeater">Your Profile</h4>
+                            <a class="heading-elements-toggle"><i class="la la-ellipsis-h font-medium-3"></i></a>
+                        </div>
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- User image on the right -->
+                                    <div class="col-md-3 order-md-2 text-center">
+                                        @if ($photo != null && $photo_mimetype != null)
+                                            <img src="data:{{ $photo_mimetype }};base64,{{ base64_encode($photo) }}"
+                                                alt="Profile Image" class="img-fluid rounded-circle w-50">
+                                        @else
+                                            <img src="{{ asset('assets/img/user-placeholder-removebg.png') }}"
+                                                alt="Profile Image" class="img-fluid rounded-circle w-50">
+                                        @endif
+                                        <p class="mt-2"><strong>{{ $employee->employee_name }}</strong></p>
+                                    </div>
                                         <!-- Profile details -->
-                                        <div class="col-md-7">
-                                            <table class="table">
-                                                <tbody>
+                                        <div class="col-md-9 order-md-1 w-100 overflow-auto">
+                                        <table class="table">
+                                            <tbody>
                                                     <tr>
                                                         <td class="text-right"><strong>Employee ID: </strong></td>
                                                         <td>{{ $employee_sf_data->employee_number }}</td>
@@ -83,18 +89,10 @@
                                                         </td>
                                                     </tr>
                                                 </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- User image on the right -->
-                                        <div class="col-md-4 text-center">
-                                            <img src="{{ asset('assets/img/user-placeholder-removebg.png') }}"
-                                                alt="Profile Image" class="img-fluid rounded-circle"
-                                                style="width: 250px; height: 250px;">
-                                            <p class="mt-2"><strong>{{ $employee->employee_name }}</strong></p>
-                                        </div>
+                                        </table>
                                     </div>
-
+                                </div>
+                            
                                     <!-- Enter Details Section -->
                                     <div class="col-md-12">
                                         <hr>

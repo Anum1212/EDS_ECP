@@ -166,7 +166,7 @@
                 </div>
             </a>
 
-            <a href="{{ URL::to('mess-bookings/') }}" class="status-tile-link">
+            <a href="{{ URL::to('mess-bookings/employee') }}" class="status-tile-link">
                 <div class="status-action-tile progress-tile">
                     <i class="la la-exclamation-circle status-tile-icon"></i>
                     <div class="tile-text">
@@ -179,7 +179,7 @@
                         </div>
                     </div>
                 </div>
-            </a><a href="{{ URL::to('mess-bookings/approved') }}" class="status-tile-link">
+            </a><a href="{{ URL::to('mess-bookings/employee/approved') }}" class="status-tile-link">
                 <div class="status-action-tile progress-tile">
                     <i class="la la-exclamation-circle status-tile-icon"></i>
                     <div class="tile-text">
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                 </div>
-            </a><a href="{{ URL::to('mess-bookings/unapproved') }}" class="status-tile-link">
+            </a><a href="{{ URL::to('mess-bookings/employee/unapproved') }}" class="status-tile-link">
                 <div class="status-action-tile progress-tile">
                     <i class="la la-exclamation-circle status-tile-icon"></i>
                     <div class="tile-text">

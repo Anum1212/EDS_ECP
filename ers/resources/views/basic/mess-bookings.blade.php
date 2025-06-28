@@ -68,16 +68,23 @@
                                             <tr>
                                                 @if (isset($userType))
                                                     @if ($userType == 'employee')
-                                                        <td> <a href="{{ URL::to($forwardingURL . $messBooking->id) }}">{{ $messBooking->counter }}</a>
+                                                        <td> <a
+                                                                href="{{ URL::to($forwardingURL . $messBooking->id . '/employee') }}">{{ $messBooking->counter }}</a>
                                                         </td>
                                                     @elseif($userType == 'approver')
-                                                        <td> <a href="{{ URL::to($forwardingURL . $messBooking->mess_booking_id) }}">{{ $messBooking->counter }}</a>
+                                                        <td> <a
+                                                                href="{{ URL::to($forwardingURL . $messBooking->id . '/approver') }}">{{ $messBooking->counter }}</a>
                                                         </td>
                                                     @endif
                                                 @endif
                                                 <td data-sort="{{ strtotime($messBooking->created_at) }}">
                                                     {{ date('M d, Y', strtotime($messBooking->created_at)) }}</td>
-                                                <td>{{ $messBooking->employee_name }}</td>
+                                                <td>
+                                                    @if ($messBooking->employee)
+                                                        {{-- Check if the employee relationship exists --}}
+                                                        {{ $messBooking->employee->employee_name }}
+                                                    @endif
+                                                </td>
                                                 <td>{{ $messBooking->status }}</td>
                                             </tr>
                                         @endforeach
@@ -111,6 +118,21 @@
                                 <div class="col-md-9">
                                     <input type="text" class="form-control custom-input date-range-picker"
                                         name="dateRange" id="dateRange" required>
+                                </div>
+                            </div>
+
+                            <!-- Optional: Add status filter -->
+                            <div class="row form-group">
+                                <div class="col-md-3 mt-1">
+                                    <label for="status_filter">Status:</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control" name="status_filter" id="status_filter">
+                                        <option value="all">All Bookings</option>
+                                        <option value="approved">Approved Only</option>
+                                        <option value="pending">Pending Only</option>
+                                        <option value="rejected">Rejected Only</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

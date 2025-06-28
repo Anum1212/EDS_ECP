@@ -390,7 +390,7 @@
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="la la-check-circle" style="font-size: 24px;"></i>
                                         <span class="badge badge-danger">
-                                            {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) }}
+                                            {{ count($employee->vouchersRequireApproval) + count($employee->travelOrdersRequireApproval) + count($employee->unapprovedYLunchForApprover) }}
                                         </span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarToDo">
@@ -424,34 +424,34 @@
 
                                         {{-- Y-Lunch --}}
                                         <!-- Pending Section -->
-                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/unapproved') }}">
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/approver/pending') }}">
                                             <strong style="margin-left: 8%">Pending</strong>
                                             <span
                                                 style="background-color: #FF9149; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
-                                                {{ count($employee->unapprovedYLunch) }}
+                                                {{ count($employee->unapprovedYLunchForApprover) }}
                                             </span>
                                         </a>
 
                                         <!-- Approved Section -->
-                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/approved') }}">
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/approver/approved') }}">
                                             <strong style="margin-left: 8%">Approved</strong>
                                             <span
                                                 style="background-color: #28D094; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
-                                                {{ count($employee->approvedYLunch) }}
+                                                {{ count($employee->approvedYLunchForApprover) }}
                                             </span>
                                         </a>
 
                                         <!-- Rejected Section -->
-                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/rejected') }}">
+                                        <a class="dropdown-item" href="{{ URL::to('mess-bookings/approver/rejected') }}">
                                             <strong style="margin-left: 8%">Declined</strong>
                                             <span
                                                 style="background-color: #1E9FF2; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -14px; margin-left: -3px;">
-                                                {{ count($employee->rejectedYLunch) }}
+                                                {{ count($employee->rejectedYLunchForApprover) }}
                                             </span>
                                         </a>
                                         @if (in_array($employee->user_name, ['pl-medical-officer', 'sp-medical-officer', 'bsp-medical-officer', 'dic-medical-officer', 'prel-medical-officer']))
                                             <a class="dropdown-item" href="{{ URL::to('process/medical/vouchers') }}">
-                                                <strong style="">🎯 Process Medical Claims</strong>
+                                                <strong style=""> Process Medical Claims </strong>
                                             </a>
                                         @endif    
                                     </div>
@@ -487,7 +487,6 @@
             </div>
         </div>
     </nav>
-
     <div class="app-content content">
         <div class="content-wrapper">
             <div id="jsMessage"></div>

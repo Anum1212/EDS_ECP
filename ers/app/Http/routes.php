@@ -152,10 +152,9 @@ Route::group(['middleware' => ['Authenticate', 'HttpsProtocol']],function () {
 
     // mess booking routes
     Route::get('mess-booking/add', 'MessBookingController@showMessBookingForm');
-    Route::get('mess-bookings/{type}', 'MessBookingController@showMessBookings');
-    Route::get('mess-bookings/approver', 'MessBookingController@showApproverMessBookings');
+    Route::get('mess-bookings/{userType}/{listType?}', 'MessBookingController@showMessBookings');
+    Route::get('mess-booking/details/{id}/{userType?}', 'MessBookingController@showMessBookingDetails');
     Route::post('mess-booking/create', 'MessBookingController@createMessBooking');
-    Route::get('mess-booking/details/{id}', 'MessBookingController@showMessBookingDetails');
     Route::get('mess-booking/submit/{id}', 'MessBookingController@submitMessBooking');
     Route::get('mess-booking/delete/{id}', 'MessBookingController@deleteMessBooking');
     Route::get('mess-booking/approve/{id}', 'MessBookingController@approveMessBooking');
