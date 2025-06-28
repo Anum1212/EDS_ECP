@@ -107,7 +107,7 @@ class Employee extends Model
     }
     public function rejectedYLunchForApprover()
     {
-        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->where('status', "'Rejected");
+        return $this->hasMany('App\Mess_Booking', 'approver_emp_number', 'employee_number')->where('status', 'Rejected');
     }
 
 

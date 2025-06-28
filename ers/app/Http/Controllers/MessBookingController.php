@@ -54,7 +54,6 @@ class MessBookingController extends Controller
 				} else {
 					$data['messBookings'] = $data['employee']->totalYLunch()->get();
 				}
-				
 			} elseif ($userType == 'approver') {
 				$data['userType'] = 'approver';
 				if ($listType == 'approved') {
@@ -129,8 +128,8 @@ class MessBookingController extends Controller
 	{
 		$data['employee'] = Session::get('emp_details');
 		if (isset($data['employee']->id)) {
-		$data['photo'] = Session::get('photo');
-		$data['photo_mimetype'] = Session::get('photo_mimetype');
+			$data['photo'] = Session::get('photo');
+			$data['photo_mimetype'] = Session::get('photo_mimetype');
 			$data['path'] = Route::getFacadeRoot()->current()->uri();
 			$data['employee_sf_data'] = Session::get('sf_details');
 			if ($data['employee_sf_data']->line_manager_id == null) {
@@ -333,7 +332,17 @@ class MessBookingController extends Controller
 		$data['date_range'] = $request->input('dateRange');
 		$status_filter = $request->input('status_filter', 'all');
 
-		$date_range_split = explode("-", $data['date_range']);
+		// Handle date range parsing
+		if (!$data['date_range']) {
+			Session::flash('error', 'Please select a date range.');
+			return redirect()->back();
+		}
+
+		$date_range_split = explode(" - ", $data['date_range']); // Note: space around dash
+		if (count($date_range_split) < 2) {
+			$date_range_split = explode("-", $data['date_range']); // Fallback
+		}
+
 		$from_date = trim($date_range_split[0]);
 		$to_date = trim($date_range_split[1]);
 
@@ -343,23 +352,30 @@ class MessBookingController extends Controller
 		// Choose method based on status filter
 		switch ($status_filter) {
 			case 'approved':
-				$messBookings = $employee->approvedYLunchForApprover();
+				$messBookingsQuery = $employee->approvedYLunchForApprover();
 				break;
 			case 'pending':
-				$messBookings = $employee->unapprovedYLunchForApprover();
+				$messBookingsQuery = $employee->unapprovedYLunchForApprover();
 				break;
 			case 'rejected':
-				$messBookings = $employee->rejectedYLunchForApprover();
+				$messBookingsQuery = $employee->rejectedYLunchForApprover();
 				break;
 			default:
-				$messBookings = $employee->totalYLunchForApprover();
+				$messBookingsQuery = $employee->totalYLunchForApprover();
 				break;
 		}
 
-		$messBookings = $messBookings
-			->whereBetween('created_at', [$from_date, $to_date])
+		// Apply date filter and get results
+		$messBookings = $messBookingsQuery
+			->whereBetween('mess_bookings.created_at', [$from_date . ' 00:00:00', $to_date . ' 23:59:59'])
 			->with(['employee'])
 			->get();
+
+		// Debug: Check if we have any bookings
+		if ($messBookings->isEmpty()) {
+			Session::flash('error', 'No bookings found for the selected date range and status filter.');
+			return redirect()->back();
+		}
 
 		// Generate CSV
 		$filename = "mess_bookings_report_" . $status_filter . "_" . date('Y-m-d_H-i-s') . ".csv";
@@ -394,17 +410,17 @@ class MessBookingController extends Controller
 			foreach ($messBookings as $booking) {
 				fputcsv($file, [
 					$counter,
-					date('M d, Y', strtotime($booking->created_at)),
+					$booking->created_at ? date('M d, Y', strtotime($booking->created_at)) : 'N/A',
 					$booking->employee ? $booking->employee->employee_name : 'N/A',
 					$booking->employee ? $booking->employee->employee_number : 'N/A',
-					$booking->booking_name,
-					$booking->bsp_employee_count,
-					$booking->guest_count,
-					$booking->total_head_count,
-					date('M d, Y', strtotime($booking->booking_start_date)),
-					date('M d, Y', strtotime($booking->booking_end_date)),
-					$booking->booking_time,
-					$booking->status,
+					$booking->booking_name ? $booking->booking_name : 'N/A',
+					$booking->bsp_employee_count ? $booking->bsp_employee_count : 0,
+					$booking->guest_count ? $booking->guest_count : 0,
+					$booking->total_head_count ? $booking->total_head_count : 0,
+					$booking->booking_start_date ? date('M d, Y', strtotime($booking->booking_start_date)) : 'N/A',
+					$booking->booking_end_date ? date('M d, Y', strtotime($booking->booking_end_date)) : 'N/A',
+					$booking->booking_time ? $booking->booking_time : 'N/A',
+					$booking->status ? $booking->status : 'N/A',
 					$booking->remarks ? $booking->remarks : ''
 				]);
 				$counter++;
