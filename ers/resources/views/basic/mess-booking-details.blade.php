@@ -100,7 +100,7 @@
                 <div class="card-body">
                     {{-- for employees --}}
                     @if (isset($submitURL) && $userType == 'employee' && $messBooking->status == 'Draft')
-                        <a href="{{ URL::to($submitURL . '/' . $messBooking->id . '/employee') }}">
+                        <a href="{{ URL::to($submitURL . '/' . $messBooking->id ) }}">
                             <button type="button" class="btn btn-success" style="padding: 5px 8px; font-size: 14px;">
                                 <i class="la la-check-circle"></i> Send for Approval
                             </button>
